@@ -1,0 +1,17 @@
+Push2web for Voice Conference Manager
+
+Push2web allows a Web server to "push" updates to a passive web page. Instead of reloading the web page on a regular basis, or requiring the user to click for an update, push2web sends information to the web page which  then updates automatically. The web page uses standard HTML/CSS for display.
+
+Push2web comes in two parts. The first is a Java servlet that runs on the Web server that opens a socket on the web server. The second part is Java and Javascript that runs in the browser. A Java applet logs into the socket to receive updates, and when an update arrives,  it passes the update to a Javascript script. That JS script updates the DOM model of the page to provide current information. In turn, this means that the web page uses standard HTML, CSS, etc. to display the information -- the Java and JavaScript is invisible to the user.
+
+Push2web is part of Voice Conference Manager for Prophecy 2006, and its goal is to provide a web page with a real-time view of the state of a telephone conference call. In particular, push2web runs on the freely-downloadable, no-cost-license Voxeo "Prophecy 2006" platform. Prophecy 2006 includes speech recognition, text-to-speech, SIP interfaces, PHP and Java web servers, as well as CCXML, VoiceXML, SRGS, and TTS-markup interpreters. Voice Conference Manager provides an excellent introduction on how to use these telephony and speech technologies. Details of the Voice Conference Manager's architecture are on the project's web site, and as an article in Dr. Dobbs Journal. Because Prophecy provides all releveant technology, anyone can extend Voice Conference Manager or create entirely new speech recognition and telephony projects.
+
+Project web site: http://vcm.sourceforge.net
+
+Sourceforge home page: http://sourceforge.net/projects/vcm/
+
+Project download: http://sourceforge.net/project/showfiles.php?group_id=116717
+
+Prophecy download: http://www.voxeo.com/prophecy
+
+Prophecy 2006 Developer Site: http://www.Prophecy2006.com

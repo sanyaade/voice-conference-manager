@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+	
+	
+	<!-- listeners -->
+	<listener>
+		<listener-class>TestServerListener</listener-class>
+	</listener>
+	
+	<!-- JSP pages -->
+	
+	<servlet>
+		<servlet-name>startPush2Web</servlet-name>
+		<jsp-file>/pages/startPush2Web.jsp</jsp-file> <!-- fully-qualified path name! -->
+		<init-param>
+			<param-name>PublicPort</param-name>
+			<param-value>15334</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>startPush2Web</servlet-name>
+		<url-pattern>/startPush2Web.jsp</url-pattern>
+	</servlet-mapping>
+	
+
+</web-app>

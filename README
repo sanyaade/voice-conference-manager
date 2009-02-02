@@ -1,0 +1,30 @@
+
+ABOUT VOICE CONFERENCE MANAGER
+
+Voice Conference Manager (VCM) uses VoiceXML, CCXML, and grXML to create a
+voice conference call system. A "clerk" calls a telephone number to set up
+a conference call. The clerk says the names of all the participants, and
+then hangs up. A server then calls each participant and adds them to the
+conference call.
+
+The system also includes a web-based monitoring system. By viewing a web
+page, the conference owner or members of the conference call can see who is
+on the call. (In the future, the conference call will be controlled by the
+web page interface.)
+
+ABOUT THE GIT REPOSITORY
+
+There are three subfolders here:
+
+- 'vcm' - a platform-independent implementation of the Voice Conference
+  Manager
+
+- 'vcm-prophecy' - a VCM version developed for Voxeo's Prophecy platform
+  (freely available at http://www.voxeo.com/prophecy/ )
+
+- 'push2web' - provides VCM with a web page that can monitor and control 
+   a conference call. 
+
+Please see the "README.txt" files located in each subfolder for more
+information about each project.
+

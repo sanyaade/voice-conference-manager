@@ -1,0 +1,13 @@
+vcm-prophecy alpha 0.3
+
+	* Modify CCXML scripts to provide more information to Java servlet. This additional info allows VCM Monitor Page to track individual calls.
+	
+	* Provide logic to drop calls and mute calls on command from web page.
+	
+	* Add announcement to callers who are dropped by web page.
+	
+	* Turn off the logic that drops the final call in a conference. With no conference object, it's too unwieldly. 
+	
+	* Note that mute/unmute via the web page does not work: Voxeo Prophecy has a bug that prevents a join after an unjoin.
+	
+	* Commented-out CCXML code tests  for presence of official conference object... it's not there yet.

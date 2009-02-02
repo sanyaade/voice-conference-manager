@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager</title> 
+  </header> 
+  <body> 
+	<section>
+		<title>Publically Accessible Servers</title>
+		<p>The Voice Conference Manager runs on publically-accessible servers. In particular, the current release was run and tested on publically-accessible development servers provided by <link href="ext:voxeo">Voxeo</link>.</p>
+		<p>A list of VoiceXML and CCXML servers that are open to the public can be found at the <link href="ext:dis-servers">Disaggregate Blog</link>.
+        </p>
+    </section>
+  </body>
+</document>

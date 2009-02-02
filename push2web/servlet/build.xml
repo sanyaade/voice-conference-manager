@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	vcmServer servlet
+	Ant configuration script
+
+	Copyright (c) 2004-2006 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com
+	See attached license for details and disclaimers
+	
+	$Author: myudkowsky $
+	$Date: 2006-06-05 19:45:04 -0500 (Mon, 05 Jun 2006) $
+	$Id: build.xml 51 2006-06-06 00:45:04Z myudkowsky $
+	$Revision: 47 $
+	
+-->
+
+<project name="push2web" default="war" basedir=".">
+	
+	<!-- ==================================================== -->
+	<!-- globals -->
+	<!-- ==================================================== -->	
+
+	
+	
+	<!-- local source, build directory -->
+	<property name="srcDir"		value="src/com/disaggregate/push2web"/>
+	<property name="buildDir"	value="classes"/>
+	<property name="docRoot"	value="docs/push2web"/>
+	<property name="lib"		value="lib/push2web"/>
+	<property name="jspFiles"	value="jsp/push2web"/>
+	<property name="warconf"	value="warconf/push2web"/>
+
+	<!-- ==================================================== -->
+	<!-- path information -->
+	<!-- ==================================================== -->	
+	
+	<path id="classpath">
+		<pathelement path="${classpath}"/>
+		<pathelement path="${java.class.path}/"/>
+		<pathelement path="/pc/flute/Program Files/Voxeo/Jetty/lib/javax.servlet.jar"/>
+		<pathelement path="${buildDir}/"/>
+	</path>
+	
+	<!-- ==================================================== -->
+	<!-- targets -->
+	<!-- ==================================================== -->	
+	
+	<!-- application name -->
+	<property name="appname" value="push2web" />
+	
+	<target name="compile" description="compile server">
+		<javac srcdir="${srcDir}" destdir="${buildDir}/${appname}" classpathref="classpath"/>
+	</target>
+	
+	<target name="war" depends="compile" description="build server WAR files">
+		<war destfile="${appname}.war" webxml="${warconf}/${appname}.xml">
+			<!-- for WEB-INF, we need basedir/classes/subdir/appname -->
+			<!-- that way, WAR file gets classes/appname, needed by WAR protocol -->
+			<classes dir="${buildDir}/${appname}"/>		<!-- compiled items -->
+			<fileset dir="${docRoot}"/>			<!-- HTML, CSS, etc -->
+			<zipfileset dir="${jspFiles}"/>
+		</war>
+	</target>
+	
+	<target name="dtd" description="generate DTD for debug output">
+		<antstructure output="${appname}.dtd"/>
+	</target>
+	
+
+	<!-- ==================================================== -->
+	<!-- TEST targets -->
+	<!-- ==================================================== -->	
+
+	<property name="tappaname" value="testPush"/>
+	
+	<target name="tclean" description="clean for test build">
+		<delete>
+			<fileset dir="${build}test" includes="**/*.class"/>
+		</delete>
+	</target>
+	
+	<target name="tcompile" description="compile test server">
+		<javac srcdir="${srcDir}test" destdir="${buildDir}test" classpathref="classpath"/>
+	</target>
+	
+	<target name="twar" depends="tcompile" description="build test server WAR file">
+		<war destfile="${tappaname}.war" webxml="${warconf}test/web.xml">
+			<classes dir="${buildDir}test"/>		<!-- compiled items -->
+			<fileset dir="${docRoot}test"/>			<!-- HTML, CSS, etc -->
+			<zipfileset dir="${jspFiles}test" prefix="pages"/>
+		</war>
+	</target>
+
+	
+</project>
+
+		

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Main module: Dispatches other modules as needed. -->
+<!-- $Header: /cvsroot/vcm/vcm/ccxml/conf_announce.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+<!-- $Id: conf_announce.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+
+<!-- Valid states for this call -->
+
+<!-- list of symbolic substate names: -->
+
+<var name="ca_init"					expr="'ca_init'"/>
+<var name="ca_callInProgress"		expr="'ca_callInProgress'"/>
+
+
+<!-- Event names -->
+<var name="announcement_over"		expr="'announcement_over'"/>
+<var name="killapp_timeout"			expr="'killapp_timeout'"/>
+
+
+
+<!-- Vars used throughout -->
+
+	<!-- overall state name. Initialize: -->
+	<var name="ca_callState" expr="ca_init"/>
+	
+	<!-- number to call -->
+	<var name="destPhone"/>
+	
+	<!-- conference ID -->
+	<var name="conf"/>
+	
+	<!-- session ID of CCXML to notify of significant events -->
+	<var name="home"/>
+	
+	<!-- Kill the call after 1 minute(s) no matter what -->
+	<var name="killerTimeout" expr="60000"/>
+
+
+<!-- PROGRAM BEGINS -->
+
+
+<log expr="'Conference Announce begins...'"/>
+
+
+<eventprocessor statevariable="ca_callState">
+
+	<!-- STATE ca_init.  Wait for info about numbers to call -->
+	
+	
+	<!-- number to call -->
+	<transition state="ca_init" event="user.info" name="evt">
+  home
+		<assign name="destPhone"		expr="evt.currentPhone"/>
+		<assign name="conf"				expr="evt.confID"/>
+		<assign name="home"				expr="evt.home"/>
+
+		<createcall dest="destPhone"/> 
+
+	</transition>
+
+	<!-- the destination plays an annoucement, so get it into conference call immediately -->
+	<transition state="ca_init" event="connection.connected" name="evt" >
+		<!-- play an annoucement as each is connected -->
+		<join id1="evt.connectionid" id2="conf"/>
+		<assign name="ca_callState" expr="ca_callInProgress"/>
+	</transition>
+	
+	<!-- for safety's sake while debugging, put in a timeout -->
+	<transition state="ca_init" event="ccxml.loaded" name="evt">
+		<send event="killapp_timeout" target="session.id" delay="killerTimeout"/>
+	</transition>
+	
+	<!-- when the announcement ends, the call we made ends, and so does this thread -->
+	
+	<transition state="ca_callInProgress" event="connection.disconnected">
+		<!-- we will not do an "unjoin" because the call no longer exists -->
+		<!-- unjoin id1="evt.connectionid" id2="conf"/ -->
+		<!-- send event to calling program -->
+		<send event="announcement_over" target="home"/>
+		<exit/>
+	</transition>
+
+
+	<!-- General handlers. -->
+	
+
+	<!-- call invalid. drop out -->
+	<transition  event="call.CALL_INVALID" name="evt" >
+		<exit/>
+	</transition>
+
+
+	<!-- General purpose error handlers -->
+
+	<transition event="error.document" name="evt">
+		<log expr="'ERROR: in &quot;conf_legs.xml&quot;, &quot;' + evt.error + '&quot; while in state ' + ca_callState + ', exiting now'" />
+		<exit/>
+	</transition>
+	
+	<transition event="error.*">
+		<log expr="'ERROR: &quot;' + evt.error + '&quot; while in state ' + ca_callState + ', exiting now'"/>
+		<exit/>
+	</transition>
+	
+	<!-- sick puppy -->
+	<transition event="system.ping">
+		<log expr="'ERROR: received system.ping, we must be dead'"/>
+		<exit/>
+	</transition>
+	
+	<!-- Final emergency debugging timeout -->
+	<transition event="user.killapp_timeout">
+		<exit/>
+	</transition>
+
+</eventprocessor>
+
+<!-- WARNING! Code found here will execute *before* eventprocessor! -->
+
+</ccxml>

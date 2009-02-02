@@ -1,0 +1,42 @@
+Notes
+
+Copyright (c) 2004-2006 by Moshe Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+$Author: myudkowsky $
+$Date: 2006-07-25 16:28:58 -0500 (Tue, 25 Jul 2006) $
+$Id: TODO.txt 86 2006-07-25 21:28:58Z myudkowsky $
+$Revision: 86 $
+
+See license for terms of use and disclaimers!
+
+To do list for Voice Conference Manager - P2006 Edition
+
+* Better Voice User Interface
+
+  - The user interface doesn't have serious error recovery.
+
+  - The user interface doesn't let the clerk select how long the conference call will last.
+  
+* Configuration
+
+  - While most config variables are in a separate files, there's a raft of config variables that are considered to be common to all users, and that's not the case. For example, we ought to be able to select, on a per-attendant basis, how many call legs are allowed.
+  
+  - The clerk is identified via caller ID. Clearly, the clerk should be allowed to verify with a name and PIN in case the clerk is calling from an unexpected location.
+
+* CCXML Improvements
+
+  - CCXML does not have complete coverage of all error legs
+
+  - Current CCXML has the last leg in the chain as the one that destroys the conference object. It makes a lot more sense to use the conference object connections property, but the conference object is not yet available on P2006.
+  
+* VoiceXML improvements
+
+  - Voice User Interface: the goal is to demonstrate code, not VUI, and the VUI certainly would never be "does not match." That's intended solely for the use of a developer.
+
+* Logic Improvements
+
+  - The logic of how conf_legs.php work can change. We could have one conf_master.php that holds the conference object, and make serial copies of conf_legs.php which outdial to each callee and <move>'s that callee, when they answer, to conf_master.php. The advantage would be that we could track how many callers are on the call, and teardowns would be easier.
+  
+  However, since the main goal of that version is to overcome the current lack of a conference object with a count of connections, we'll just use this current version for the forseeable future.
+  
+  

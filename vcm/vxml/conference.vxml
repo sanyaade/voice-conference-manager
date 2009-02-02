@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+
+<!-- Collect names for a conference cal -->
+
+
+<!-- $Header: /cvsroot/vcm/vcm/vxml/conference.vxml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+<!-- $Id: conference.vxml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+
+<!-- Values out -->
+<var name="count" expr="0"/>
+<var name="numberlist" expr="new String()"/>
+<var name="labellist" expr="new String()"/>
+<var name="nameDelimiter" expr="';'"/>
+
+
+<!-- Internal values and flags -->
+<var name="phone_number_attempts" expr="0"/>
+
+<!-- Grammar of names and numbers -->
+
+
+
+
+<form id="get_phone_number">
+	
+	
+	<field name="phone_number">
+		<grammar src="confgrammar.xml" type="application/grammar-xml"/>
+
+		<prompt cond="phone_number_attempts == 0">
+			Say a person's name to add them to the call.
+			You can also say phone numbers.
+			When finished, just say "finished."
+		</prompt>
+
+		
+		<prompt cond="phone_number_attempts > 0" >
+			beep
+		</prompt>
+		
+		
+		<filled>
+			
+			<assign name="phone_number_attempts" expr="phone_number_attempts + 1"/>
+			
+			<log expr="'***LOG*** Action: ' + phone_number$.interpretation.action"/>
+			<log expr="'***LOG*** Name: ' + phone_number$.interpretation.name"/>
+			<log expr="'***LOG*** Number: ' + phone_number$.interpretation.number"/>
+			<log expr="'***LOG*** Utterance: ' + phone_number$.utterance"/>
+			
+			<log expr="'***LOG*** Field value: &quot;' + phone_number + '&quot;' "/>
+			
+			<!-- Determine if we are finished or not -->
+			<if cond="phone_number$.interpretation.action == 'stop'">
+				<exit namelist="numberlist labellist count"/>
+			</if>
+			
+			<!-- Not finished. Add current number to list, then clear for another attempt -->
+			<assign name="count" expr="count + 1"/>
+			<if cond="count > 1">
+				<!-- add space before adding string -->
+				<assign name="numberlist" expr="numberlist += ' '"/>
+				<assign name="labellist" expr="labellist += nameDelimiter"/>
+			</if>
+			<if cond="phone_number$.interpretation.name == 'True'">
+				<assign name="labellist" expr="labellist += phone_number$.utterance"/>
+			<else/>
+				<assign name="labellist" expr="labellist += 'User Defined'"/>
+			</if>
+			<!-- avoid extra Nuance junk in phone number by taking only the first ten digits -->
+			<assign name="numberlist" expr="numberlist += phone_number$.interpretation.number.replace(&quot;&apos;&quot;,'').substr(0,10)"/>
+			<clear/>
+
+		</filled>
+		
+		<!-- the following horrible announcements are placeholders. Someday we will have a real voice UI -->
+		
+		<nomatch>
+			<prompt> Did not match </prompt>
+		</nomatch>
+		<noinput>
+			<prompt> Did not hear </prompt>
+		</noinput>
+		
+	
+	</field>
+
+	
+</form>
+
+
+<!-- find choice by catching event -->
+
+<catch event="choice">
+	<var name="menu_choice" expr="_message"/>
+	<exit namelist="menu_choice"/>
+</catch>
+
+</vxml>

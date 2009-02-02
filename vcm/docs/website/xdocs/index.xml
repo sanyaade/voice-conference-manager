@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>About Voice Conference Manager</title>
+      <p>Voice Conference Manager (VCM) is a software package that uses <link href="ext:voicexml-spec">VoiceXML</link>, <link href="ext:ccxml-spec">CCXML</link>, <link href="ext:grxml-spec">grXML</link>, <link href="ext:java-sun">JavaScript, Java,</link> and <link href="ext:python">Python</link> to create a system to manage telephony conference calls.</p>
+      <p>Voice conference manager offers the following features:</p>
+      <ul>
+      <li>Add people to conference call by speaking their names (if registered with the system) or by saying their phone number.</li>
+      <li>Web-based monitoring. You can log into a web page that shows, updated in real time, the status of the conference call. Future releases will let you control the conference call from a web page.</li>
+      <li>The person who sets up the call does not have to participate in the call. VCM demonstrates <em>third party</em> call control.</li>
+      <li>VCM runs on standard VoiceXML, CCXML, and web servers. It was tested on a freely-available developer server from Voxeo.</li>
+      </ul>
+      <p>The technology is explained in some detail in the <link href="site:docs">Documentation</link>.</p>
+      </section>
+ 
+    <section>
+    <title>How to Use Voice Conference Manager</title>
+  	  <p>To start a conference call, a "clerk" dials a telephone number. Voice Conference Manager uses speech recognition and text-to-speech to ask the clerk the names or phone numbers of people to place into the conference. After the clerk is done &mdash; and the clerk may hang up at this point &mdash; the VCM calls each person who's supposed to participate in the call and adds them to the call. A web pages shows the current status of the calls.
+	  </p>
+	 </section>
+	 <section>
+	 <title>Current Version</title>
+	  <p>This is still pre-alpha software. It's a good way to learn about CCXML and VoiceXML, and for that matter how to use JavaScript and Java to update a web page, live, based on a connection to a server. Many of the capabilities needed by a production server &mdash; e.g., providing a web page for each clerk rather than a single web page that any clerk can read &mdash; still have to be provided.</p>
+ 	</section>
+	
+	<section>
+		<title>Downloads</title>
+		<p>The Voice Conference Manager project <link
+          href="ext:SummaryPage">releases its files via Sourceforge</link>.
+        </p>
+    </section>
+  </body>
+</document>

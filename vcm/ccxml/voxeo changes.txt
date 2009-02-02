@@ -1,0 +1,44 @@
+
+Note: sample editor command:
+
+for i in *xml; do cat << EOF | ed $i; done
+, s/eventprocessor/eventhandler/
+, s/connection.alerting/connection.CONNECTION_ALERTING/
+, s/connection.connected/connection.CONNECTION_CONNECTED/
+, s/connection.failed/connection.CONNECTION_FAILED/
+, s/connection.disconnected/connection.CONNECTION_DISCONNECTED/
+, s/connectionid/callid/
+, s/fetch.done/ccxml.fetch.done/
+, s/conferenceid/id/
+w
+q
+EOF
+
+
+Things changed to get web site stuff to run on the Voxeo site:
+
+** eventprocessor (last call) -> eventhandler (beta)
+
+** connection.altering (beta) -> connection.CONNECTION_ALERTING (last call)
+
+(and similar changes)
+
+** <dialogstart>'s connectionid (last call) -> callid (beta)
+
+connectionid (last call) => callid (event)
+
+** fetch.done (last call) => ccxml.fetch.done (beta)
+
+** <(create|destroy)conference> conferenceid (last call) => id (beta)
+
+# undoing changes:
+for i in *xml; do cat << EOF | ed $i; done
+, s/eventhandler/eventprocessor/
+, s/connection.CONNECTION_ALERTING/connection.alerting/
+, s/callid/connectionid/
+, s/ccxml.fetch.done/fetch.done/
+, s/connection.CONNECTION_CONNECTED/connection.connected/
+, s/connection.CONNECTION_FAILED/connection.failed/
+, s/connection.CONNECTION_DISCONNECTED/connection.disconnected/
+w
+q

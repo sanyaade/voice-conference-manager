@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager CVS</title> 
+  </header> 
+  <body> 
+	<section>
+		<title>CVS Access</title>
+		<p>The Voice Conference Manager files are maintained via the CVS source control system. Anyone can download the current snapshot of the project source code or browse the files online. Instructions on how to access the files can be found on the 
+	     <link
+          href="ext:cvsPage">VCM CVS page</link> on <link href="ext:sourceforge.net">Sourceforge</link>.
+        </p>
+    </section>
+  </body>
+</document>

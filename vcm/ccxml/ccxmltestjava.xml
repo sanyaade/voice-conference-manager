@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Main module: Dispatches other modules as needed. -->
+<!-- $Header: /cvsroot/vcm/vcm/ccxml/conf_legs.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+<!-- $Id: conf_legs.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+
+<!-- Valid states for this call -->
+
+<!-- list of symbolic substate names: -->
+
+<log expr="'Java script comlink test begins...'"/>
+
+
+<var name="cl_init"					expr="'cl_init'"/>
+<var name="cl_callInProgress"		expr="'cl_callInProgress'"/>
+<var name="cl_dropout_start"		expr="'cl_dropout_start'"/>
+<var name="cl_dropout_finish"		expr="'cl_dropout_finish'"/>
+
+<!-- event names -->
+<var name="dropout"					expr="'dropout'"/>
+<var name="info"					expr="'info'"/>
+<var name="killapp_timeout"			expr="'killapp_timeout'"/>
+<var name="nextstate"				expr="'nextstate'"/>
+<var name="ringing"					expr="'ringing'"/>
+<var name="conferenced"				expr="'conferenced'"/>
+<var name="announcing"				expr="'announcing'"/>
+<var name="dropped"					expr="'dropped'"/>
+<!-- POST via HTTP -->
+<var name="url_event" expr="'http.post'"/>
+<!-- var that contains event name for use in reports -->
+<var name="report" />
+
+<!-- Vars used throughout -->
+
+	<!-- overall state name. Initialize: -->
+	<var name="cl_callState" expr="cl_init"/>
+	
+	<!-- number to call -->
+	<var name="destPhone"/>
+	
+	<var name="destName"/>
+	
+	<!-- conference ID -->
+	<var name="conf"/>
+	
+	<!-- session ID of CCXML to notify of significant events -->
+	<var name="home"/>
+	
+	<!-- session ID of CCXML to report state changes, used to update db of call progress -->
+	<var name="reports" expr="'TOKEN_CGI_NOTIFY_URI'"/>
+	
+	<!-- name of this conference as reported to "reports" -->
+	<var name="confName" />
+	
+	<!-- this call's ID -->
+	<var name="thisCall"/>
+	
+	<!-- connection id -->
+	<var name="connectionid"/>
+	
+	<var name="NumberErrors" expr="0" />
+
+
+<!-- Variables used in various substates -->
+		
+	<!-- cl_confInProgress -->
+		<!-- max length conferees may speak -->
+		<!-- now set to 5 minutes -->
+		<var name="cl_ConfMaxLength"		expr="300000"/>
+		
+	<!-- cl_dropout -->
+		<var name="cl_dropout_announce"		expr="''"/>
+		
+		
+<!-- Other variables -->
+	<!-- Kill the call after 10 seconds no matter what -->
+	<var name="killerTimeout" expr="10000"/>
+
+<!-- URLs of VoiceXML scripts -->
+
+	<!-- Common prefixs, types -->
+	<var name="vxml_prefix" expr="''"/>
+	<var name="vxml_type" expr="'application/xml+vxml;platform=motorola'"/>
+	<var name="announcement_type" expr="'audio/wav'"/>
+	<var name="vxml_youarejoining"	expr="vxml_prefix + 'youarejoining.vxml'"/>
+	
+	<!-- the scripts -->
+
+<!-- URLs of CGI scripts -->
+
+conferenced
+
+<!-- PROGRAM BEGINS -->
+
+
+<eventprocessor statevariable="cl_callState">
+
+	<!-- STATE cl_init.  Wait for info about numbers to call -->
+	
+	
+	<!-- list of numbers to call -->
+	<transition state="cl_init" event="ccxml.loaded" name="evt">
+		<send event="killapp_timeout" target="session.id" delay="killerTimeout"/>
+		<assign name="destPhone" expr="'NXXXXXXXXX'"/>
+		<assign name="destName" expr="'Martian Government'"/>
+		<assign name="confName" expr="'some_call_id'"/>
+		<assign name="report" expr="ringing"/>
+		<send event="url_event" target="reports" namelist="report destName destPhone confName"/>
+		<assign name="report" expr="announcing"/>
+		<send event="url_event" target="reports" namelist="report destName destPhone confName"/>
+		<assign name="report" expr="conferenced"/>
+		<send event="url_event" target="reports" namelist="report destName destPhone confName"/>
+		<assign name="report" expr="dropped"/>
+		<send event="url_event" target="reports" namelist="report destName destPhone confName"/>
+	</transition>
+	
+	<transition  state="cl_init" event="connection.alerting" name="evt">
+		<accept/>
+	</transition>
+	
+	<transition  state="cl_init" event="connection.disconnected" name="evt">
+		<exit/>
+	</transition>
+	
+	<!-- sick puppy -->
+	<transition event="system.ping">
+		<log expr="'ERROR: received system.ping, we must be dead'"/>
+		<exit/>
+	</transition>
+	
+	<!-- Final emergency debugging timeout -->
+	<transition event="user.killapp_timeout">
+		<exit/>
+	</transition>
+
+</eventprocessor>
+
+<!-- WARNING! Code found here will execute *before* eventprocessor! -->
+
+</ccxml>

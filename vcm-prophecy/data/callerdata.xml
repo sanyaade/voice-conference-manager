@@ -1,0 +1,9 @@
+<?xml version='1.0' standalone='yes'?>
+<userlist>
+
+	<user type="person" name="Moshe Yudkowsky" nickname="Moshe">
+		<username>myudkowsky</username>
+		<addressbook>moshe_yudkowsky.xml</addressbook>
+	</user>
+	
+</userlist>

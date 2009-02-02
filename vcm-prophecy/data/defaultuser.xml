@@ -1,0 +1,13 @@
+<contactlist>
+
+	<contact type="person" sex="male" name="Default User" nickname="default">
+		<address type="phone" name="cell"> sip:default@127.0.0.1:5070 </address>
+		<address type="phone" name="office"> sip:default2@127.0.0.1:5070 </address>
+		<address type="phone" name="home"> sip:default3@127.0.0.1:5070 </address>
+	</contact>
+
+	<contact type="person" sex="male" name="Test User">
+		<address type="phone" name="home"> sip:test@127.0.0.1:5070 </address>
+	</contact>
+
+</contactlist>

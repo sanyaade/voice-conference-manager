@@ -1,0 +1,16 @@
+# convert between standard W3C Last Call CCXML spec and the current Voxeo beta
+
+for i in $*; do echo $i; cat << EOF | ed $i; done
+, s/eventprocessor/eventhandler/
+, s/connection.alerting/connection.CONNECTION_ALERTING/
+, s/connection.connected/connection.CONNECTION_CONNECTED/
+, s/connection.failed/connection.CONNECTION_FAILED/
+, s/connection.disconnected/connection.CONNECTION_DISCONNECTED/
+, s/\<connectionid\>/callid/g
+, s/fetch.done/ccxml.fetch.done/
+, s/conferenceid/id/
+, s/error.conference.unjoin/error.statemismatch/
+, s/conference.joined/ccxml.conference.joined/
+w
+q
+EOF

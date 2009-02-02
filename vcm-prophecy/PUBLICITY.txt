@@ -1,0 +1,15 @@
+Voice Conference Manager for Prophecy, Release Alpha-0.3
+
+In this alpha-0.3 release, Voice Conference Manager updates both the VoiceXML/CCXML/Java servlets and the "push2web" Java servlet and applet (also part of the VCM project). The VCM Monitor web page now provides a better real-time view of conference calls in progress.
+
+This branch of Voice Conference Manager makes VCM available on the freely-downloadable, no-cost-license Voxeo "Prophecy 2006" platform. Prophecy 2006 includes speech recognition, text-to-speech, SIP interfaces, PHP and Java web servers, as well as CCXML, VoiceXML, SRGS, and TTS-markup interpreters. Voice Conference Manager provides an excellent introduction on how to use these telephony and speech technologies. Details of the Voice Conference Manager's architecture are on the project's web site, and as an article in Dr. Dobbs Journal. Because Prophecy provides all releveant technology, anyone can extend Voice Conference Manager or create entirely new speech recognition and telephony projects.
+
+Project web site: http://vcm.sourceforge.net
+
+Sourceforge home page: http://sourceforge.net/projects/vcm/
+
+Project download: http://sourceforge.net/project/showfiles.php?group_id=116717
+
+Prophecy download: http://www.voxeo.com/prophecy
+
+Prophecy 2006 Developer Site: http://www.Prophecy2006.com

@@ -1,0 +1,53 @@
+Notes
+
+	Copyright (c) 2004-2006 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+	$Author: myudkowsky $
+	$Date: 2006-07-28 13:38:32 -0500 (Fri, 28 Jul 2006) $
+	$Id: INSTALL.txt 96 2006-07-28 18:38:32Z myudkowsky $
+	$Revision: 96 $
+
+See license for terms of use and disclaimers!
+
+* This project is available at Sourceforge, http://vcm.sourceforge.net.
+
+* The latest version of the source code is available from the SVN repository. To check out the source code, use your SVN client:
+
+svn co https://svn.sourceforge.net/svnroot/vcm/branch/vcm-p2006
+
+INSTALLATION
+
+== Servers and Interpreters
+
+This branch of the Voice Confererence Manager will run on the Prophecy 2006 server. Place this project into a sub-directory that's accessible to the P2006 web server -- for example, in c:/Program Files/Voxeo/www. You will need to use the P2006 administrative console to route calls to the service.
+
+An entry in callrouting.xml will look like:
+
+	<category name="route-M-03">
+		<item name="dialedID">vcm</item>
+		<item name="URL">http://127.0.0.1:9990/vcm-p2006/ccxml/conference.php</item>
+		<item name="ppid">5063</item>
+	</category>
+
+Please note that if you use the P2006 admin console, you wiil need to specify CCXML 1.0 as the intepreter.
+
+== Configuration Files
+
+CCXML: The file ccxml/ccxml_config.inc contains data for the scripts. The ones you will most likely change will the URLs, which should contain the name of your server or 127.0.0.1, and the caller ID number, which should not be my office phone number!
+
+If you want to use the "push2web" monitoring, which lets you monitor web pages in real time, set the appropriate value to "true" and provide the correct URL (the correct URL is set there by default). You will need to install the separate "push2web" package. 
+
+VoiceXML: vxml/vxml_config.inc contains the full URL of the grammar file. The full URL is necessary because an HTTP fetch is necessary to use PHP. The data directory can be anywhere Internet-accessible, but in this demo we keep it in the data directory.
+
+Data: The file callerdata.xml contains a list of authorized users -- authorized "clerks" -- and is read by cgi/calleridcheck.php. The list of people who can be added to call by a particular clerk is given in a file that's modeled after Voxeo's "contact XML." The sample contact file in this directory is called moshe_yudkowsky.xml. Please note that the proper form of a PSTN number is usually "tel:17737648727," but I've found that international calls via SIP service providers require the format "sip:Cxxxxxx@sip.example.com", where C is the country code and xxxxx is the phone number.
+
+CGI: The cgi_config.inc file includes a few variables. One is $default_user, which lets the call proceed even if caller ID is not provided. Since the default configuration of Voxeo's SIP phone is to have no caller ID, the variable is set by default to a default user. For a more secure server, and once you have caller ID working, you can set $default_user to an empty string.
+
+Note. If you're using the default user, than your conference choices are:
+
+"default home"
+"default cell"
+"default office"
+"Test User"
+
+SIP Phone: If you're using SIP Phone, you should configure the user name, which will then provide Caller ID information.

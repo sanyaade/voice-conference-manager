@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager People</title> 
+  </header> 
+  <body> 
+	<section>
+		<title>People</title>
+		<p>Moshe Yudkowsky is President of <link href="ext:disaggregate">Disaggregate</link>, a company that creates technological change. He can be reached via the <link href="ext:disaggregate">Disaggregate web site</link>.
+        </p>
+    </section>
+  </body>
+</document>

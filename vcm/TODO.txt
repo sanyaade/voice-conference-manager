@@ -1,0 +1,35 @@
+Notes
+
+Copyright (c) 2004 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+$Header: /cvsroot/vcm/vcm/TODO.txt,v 1.2 2005/02/16 02:04:18 myudkowsky Exp $
+$Id: TODO.txt,v 1.2 2005/02/16 02:04:18 myudkowsky Exp $
+
+See license for terms of use and disclaimers!
+
+To do list for Voice Conference Manager
+
+* Better User Interface
+
+  - The user interface doesn't have serious error recovery.
+
+  - The user interface doesn't let the clerk select how long the conference call will last.
+  
+  - Make a web-page interface to CCXML. (This is actually rather straightforward.) == DONE
+  
+  - Make web-page interface to CCXML status go only to one user at a time!
+  
+* Configuration
+
+  - Figure out a way to have a config file for URLs. XSL? Python? sed? PHP? == DONE
+
+
+* CCXML Improvements
+
+  - When CCXML intepreter is closer to W3C spec, and W3C spec is revised, the scripts will have to be revised.
+
+  - When ECMAScript interpreter is revised, use arrays and not the text-based method of storing phone numbers
+  
+* VoiceXML improvements
+
+  - Better Voice User Interface

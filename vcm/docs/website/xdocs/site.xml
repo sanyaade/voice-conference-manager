@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<!--
+Forrest site.xml
+
+This file contains an outline of the site's information content.  It is used to:
+- Generate the website menus (though these can be overridden - see docs)
+- Provide semantic, location-independent aliases for internal 'site:' URIs, eg
+<link href="site:changes"> links to changes.html (or ../changes.html if in
+  subdir).
+- Provide aliases for external URLs in the external-refs section.  Eg, <link
+  href="ext:cocoon"> links to http://xml.apache.org/cocoon/ 
+
+See http://xml.apache.org/forrest/linking.html for more info
+-->
+
+<site label="Voice Conference Manager" href="" xmlns="http://apache.org/forrest/linkmap/1.0" tab="">
+
+  <home label="Home">
+    <about label="About" href="index.html" description="Voice Conference Manager"/>
+  </home>
+
+  <technology label="Technology" href="tech/" tab="tech">
+  	<downloads label="Download" href="downloads.html"/>
+	<servers label="Servers" href="servers.html"/>
+	<cvs	label="CVS" href="cvs.html"/>
+	<!-- <demos label="Demos" href="index-demos.html" description="Demonstrations"/> -->
+  </technology>
+
+  <pubs label="Publications" href="pubs/" tab="pubs">
+    <docs label="Documentation" href="index.html"/>
+	<!--
+  	<index label="Index" href="index.html" />
+	<books label="Books" href="books.html" description="Books"/>
+	<articles label="Articles" href="articles.html" description="Articles"/>
+	<presentations label="Presentations" href="presentations.html" description="Talks and Presentations"/>
+	<techblog label="Blog" href="ext:technicalweblog" description="Technical Web Log"/>
+	-->
+  </pubs>
+  
+  <people label="People" href="people/" tab="people">
+    <index label="List" href="index.html"/>
+  </people>
+  
+  <images href="files/images/">
+		<dataflow href="dataflow.png"/>
+		<ccxmlflow href="ccxmlflow.png"/>
+		<browserflow href="browserflow.png"/>
+  </images>
+  
+  <all>
+    <whole_site_html label="Whole Site HTML" href="site.html"/>
+    <whole_site_html label="Whole Site PDF" href="site.pdf"/>
+  </all>
+
+  <external-refs>
+    <xml.apache.org href="http://xml.apache.org/">
+      <forrest href="forrest/">
+        <validation href="validation.html"/>
+        <webapp href="your-project.html#webapp"/>
+        <document-v11 href="document-v11.html"/>
+      </forrest>
+      <cocoon href="cocoon/"/>
+    </xml.apache.org>
+    
+    <java-sun href="http://java.sun.com"/>
+	
+	<disaggregate href="http://www.Disaggregate.com/">
+	 <dis-servers href="blog/technicalweblog/archives/000005.html"/>
+	</disaggregate>
+	
+	<sourceforge.net href="http://sourceforge.net/">
+		<SummaryPage href="projects/vcm"/>
+		<cvsPage	 href="cvs/?group_id=116717"/>
+	</sourceforge.net>
+	
+	<w3.org href="http://w3.org/">
+		<specs href="TR/">
+			<voicexml-spec href="voicexml"/>
+			<ccxml-spec href="ccxml"/>
+			<grxml-spec href="speech-grammar"/>
+		</specs>
+	</w3.org>
+	
+	<python href="http://www.python.org"/>
+	
+	<voxeo href="http://community.voxeo.net/"/>
+	
+  </external-refs>
+
+</site>

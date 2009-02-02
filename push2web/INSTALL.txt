@@ -1,0 +1,22 @@
+Notes
+
+	Copyright (c) 2004-2006 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+	$Author: myudkowsky $
+	$Date: 2006-07-28 10:48:44 -0500 (Fri, 28 Jul 2006) $
+	$Id: INSTALL.txt 92 2006-07-28 15:48:44Z myudkowsky $
+	$Revision: 43 $
+
+See license for terms of use and disclaimers!
+
+* This project is available at Sourceforge, http://vcm.sourceforge.net.
+
+* The latest version of the source code is available from the SVN repository. To check out the source code, use your SVN client:
+
+svn co https://svn.sourceforge.net/svnroot/vcm/branch/push2web
+
+INSTALLATION
+
+
+Push2web consists of two software packages, the applet and the servlet. Both should be installed on the Prophecy server in order to get the VCM web monitoring page to work. Each subdirectory has its own installation instructions.
+

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+
+<!-- Top level user menu. What does user want to do? Conference call or something else? -->
+
+
+<!-- $Header: /cvsroot/vcm/vcm/vxml/menu.vxml,v 1.1.1.1 2004/08/17 14:18:24 myudkowsky Exp $ -->
+<!-- $Id: menu.vxml,v 1.1.1.1 2004/08/17 14:18:24 myudkowsky Exp $ -->
+
+<!-- Values in -->
+<var name="times_requested" expr=""/>
+<var name="grammar_menu" expr=""/>
+
+<!-- Values out -->
+<var name="menu_dropcall" expr="'False'"/>
+
+<menu>
+	<prompt>
+		Please choose from the following options: <enumerate/>
+	</prompt>
+	<choice event="choice" message="conference">
+		Conference call
+	</choice>
+	<choice event="choice" message="email">
+		Send email
+	</choice>
+	<choice event="choice" message="voicemail">
+		Retrieve voice mail
+	</choice>
+	
+	<noinput>
+		Please choose from the following options: <enumerate/>
+	</noinput>
+	
+	<nomatch>
+		Please choose from the following options: <enumerate/>
+	</nomatch>
+	
+</menu>
+
+<!-- find choice by catching event -->
+
+<catch event="choice">
+	<var name="menu_choice" expr="_message"/>
+	<exit namelist="menu_choice"/>
+</catch>
+
+</vxml>

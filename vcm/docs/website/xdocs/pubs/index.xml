@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager Documentation</title> 
+  </header> 
+  <body> 
+	<section>
+		<title>How the Telephone Calls Work</title>
+		<p>Documenation on how to install this system is in the README files distributed in the source code. There isn't any user manual, and since VCM uses speech technology, a user manual is pretty low priority at present.
+        </p>
+        <p>Here&apos;s an overview of how a call works.</p>
+        
+        <figure src="site:ccxmlflow" alt="hierarchy of CCXML, VoiceXML modules"/>
+        
+        <p>The caller, whom we call the "clerk," dials into the telephony server, and the call triggers the main Call Control XML (CCXML) script. The CCXML script then runs a few VoiceXML scripts, which use speech recognition and text-to-speech to ask the clerk their reason for calling.</p>
+        
+        <p>If the clerk is attempting to make a conference call, CCXML script hands the call off to another CCXML script, the "conference setup" script (and the original script exits). This CCXML script then starts a VoiceXML script to ask the clerk what phone numbers to place into the conference call. The clerk can either say a name, if the name is pre-registered in the system, or say a telephone number.</p>
+        
+        <p>Once finished, the clerk hangs up and the CCXML script hands off the call to yet another CCXML script, the "conference manager" script (and exits). The clerk can use a web page to view the status of the call; more about that below.</p>
+        
+        <p>The conference managers script does not directly interact with anyone &mdash; it&apos; there to manage the overall conference, not individual calls. The script starts several CCXML "call leg" scripts, one for each person who will participate in the call. These "call leg" scripts each start several VoiceXML scripts to interact with the people who join the conference &mdash; to greet them, for example, or to tell them that the call is over.</p>
+        <p>When participants exit the call, the call leg script managing that call will inform the conference manager script and exit. If enough call legs terminate, the conference manager will inform the remaining call legs to terminate their calls and then exit.</p>
+        
+	</section>
+
+         <section>
+         <title>How the Browser-based Monitoring Works</title>
+         <p>As each call progresses, the CCXML scripts send call progress reports to a server, which we'll call the "information server." These reports are sent using http POST commands, and contain information about the phone number it&apos;s calling, the name of the caller if known, and the progress of the call.</p>
+        <p>Here's a diagram of the information flow.</p>
+        <figure src="site:dataflow" alt="Flow of Data between Server, CCXML Interpreter, and Browser"/>
+        <ol><li>The browser logs into the information server. The information server acts as an intermediary between the CCXML interpreter and the browser; it's the place where intelligence about the call will eventually reside. (Examples of "intelligence" include authorization, dynamic VoiceXML grammars, databases, and other functions.)</li>
+        <li> As the call progresses, the CCXML interpreter sends updates to the information server.</li>
+        <li> The server formats these updates from the CCXML interpreter and sends them to the browser.</li>
+        <li> The browser receives the updates using Java, and sends it to the browser's JavaScript interpreter. The JavaScript updates the tables that display the status of each leg of the calls.</li></ol>
+        <p>Let's expand on that last step. Here&apos;s how the browser web page programming works.</p>
+        <figure src="site:browserflow" alt="Browser Internal Data Flows"/>
+        <ol>
+        <li>When the clerk or other user loads the web page, the browser loads a Java applet as well as some JavaScript utilities.</li>
+        <li>The Java applet connects to the information server; the port to which it connects is designated in the text of the HTML of the web page.</li>
+        <li>As the Java applet receives each line of text from the information server, the Java applet calls a VCM JavaScript function and passes it that line of text.</li>
+        <li>The JavaScript utilties modify the display on the browser. It adds a table, if need be, for that particular call; or it adds a row in the table to display updates about a particular caller if that caller isn&apos; in the table yet; or it simply updates a cell in an existing row and table to show the current status of a particular caller.</li>
+        </ol>
+    </section>
+    <section>
+    <title>Current Version</title>
+    <p>The current version will make calls and run a conference, but it deliberately has some built-in limitations that can be easily removed. Calls cannot last longer than a few minutes; this guards against runaway scripts. There&apos;s a long wish list of things to add to this technology; for example, a web page that lets a clerk set up and start the call entirely over the web. There&apos;s also very little if any sercurity, and at present it&apos;s a single-user system &mdash; more than one person can&apos;t view the "monitor" web page at a time.</p>
+    <p>In other words, tune in later for further updates, or contact us if you&apos;d like to join and contribute to the project. If you&apos;re interested in this project for commercial use and need consulting, please contact <link href="ext:disaggregate">Disaggregate</link>.</p>
+    </section>
+    <section>
+    <title>Technology Summary</title>
+    <p>Here&apos;s a summary of the various technologies that are currently used by the project:</p>
+    <table>
+    <tr>
+       <td>CCXML: Call Control XML</td>
+       <td>CCXML is a W3C specification used to control telephony servers. CCXML lets you connect to phone calls (inbound and outbound) and take specific actions. We use it to receive calls, make outbound calls to conference attendees, and to send and receive information from the information server.</td>
+    </tr>
+    <tr>
+	   <td>VoiceXML</td>
+       <td>VoiceXML is a W3C specification used to control speech recogntion, text-to-speech, and voice biometrics (speaker identifcation/speaker verification). We use it to interact with the clerk who sets up the call and the conference attendees.</td>
+    </tr>
+    <tr>
+       <td>Python</td>
+       <td>Python is a scripting language. The "information server" that connects the output of the CCXML interpreter to the browser web pages is written in Python.</td>
+    </tr>
+    <tr>
+       <td>Java</td>
+       <td>Java is a OS-independent programming language which can also be used to write programs that run inside browsers. The "applet" that runs inside the browser and calls JavaScript functions is written in Java</td>
+    </tr>
+    <tr>
+       <td>JavaScript</td>
+       <td>JavaScript is distinct from Java. It's a lighter version of Java, and web browsers can use JavaScript to directly manipulate the information displayed on the screen of the browser, manage buttons, check information put into forms, etc. We use it to update the display on the browser with updates of the status of the call.</td>
+    </tr>
+    </table>
+    </section>
+    
+    	<section>
+		<title>Downloads</title>
+		<p>The Voice Conference Manager project <link
+          href="ext:SummaryPage">releases its files via Sourceforge</link>.
+        </p>
+    </section>
+  </body>
+</document>

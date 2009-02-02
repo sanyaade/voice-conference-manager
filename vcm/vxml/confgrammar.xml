@@ -1,0 +1,110 @@
+<?xml version= "1.0"?>
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Grammar to add conferernce numbers to a call -->
+
+<!-- $Header: /cvsroot/vcm/vcm/vxml/confgrammar.xml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+<!-- $Id: confgrammar.xml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+
+
+<grammar xmlns="http://www.w3.org/2001/06/grammar" xml:lang="en-US" root = "CONFEREES">
+
+
+<rule id="CONFEREES">
+
+	<!-- Action, if any: -->
+	<one-of>
+		<item repeat="0-1">
+			<ruleref uri="#ACTION"/>
+			<tag> assign(x $return)</tag>
+		</item>
+	</one-of>
+	
+	
+	<!-- Name or phone number -->
+	<one-of>
+		<item repeat="0-1">
+			<ruleref uri="#NAMES"/>
+			<tag> assign(number $return) assign(name "True")</tag>
+		</item>
+
+		<item repeat="0-1">
+			<ruleref uri="#NUMBERS"/>
+			<tag> assign(number $return) assign(name "False")</tag>
+		</item>
+	</one-of>
+	
+	
+	<tag> <![CDATA[ <action $x> <name $name> <number $number> ]]> </tag>
+	
+</rule>
+
+
+<!-- Actions: You can say "add", "finish", or nothing at all -->
+
+<rule id="ACTION">
+	<one-of>
+	
+		<item>
+			 <item repeat="0-1"> please </item> add 	<tag> return("add")</tag>
+		</item>
+		
+		<item>
+			Finished									<tag> return("stop")</tag>
+		</item>
+		
+		<item>
+			No more names								<tag> return("stop")</tag>
+		</item>
+		
+		<item>
+			stop										<tag> return("stop")</tag>
+		</item>
+		
+	</one-of>
+	
+</rule>
+
+<!-- Actual names. Return number instead of name -->
+
+<rule id="NAMES">
+	<one-of>
+		<item>
+			Moshe Office <tag> return("8005551212")</tag>
+		</item>
+		<item>
+			Moshe Home <tag> return("8005551212")</tag>
+		</item>
+
+		<item>
+			Moshe Cellphone <tag> return("8005551212")</tag>
+		</item>
+		<item>
+			Genghis Kahn <tag> return("8005551212")</tag>
+		</item>
+		<item>
+			Nanook of the North <tag> return("8005551212")</tag>
+		</item>
+		<item>
+			Gil Hamilton <tag> return("8005551212")</tag>
+		</item>
+		<item>
+			Beowulf Schaffer <tag> return("8005551212")</tag>
+		</item>
+	</one-of>
+	
+	
+</rule>
+
+<!-- speak a number that isn't on the list -->
+<!-- use Nuance "strict phone", that is, speak digits only, not "hundred" or "oh" -->
+
+<rule id="NUMBERS">
+	<ruleref uri="builtin:x-nuance-strictphone"/>
+	<tag> return ($return) </tag>
+</rule>
+
+
+</grammar>

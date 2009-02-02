@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Main module: Dispatches other modules as needed. -->
+<!-- $Header: /cvsroot/vcm/vcm/ccxml/conf_main.xml,v 1.3 2005/02/16 02:04:20 myudkowsky Exp $ -->
+<!-- $Id: conf_main.xml,v 1.3 2005/02/16 02:04:20 myudkowsky Exp $ -->
+
+<!-- Valid states for this call -->
+
+<!-- list of symbolic substate names: -->
+
+<var name="cm_init"					expr="'cm_init'"/>
+<var name="cm_welcomeBase"			expr="'cm_welcomeBase'"/>
+<var name="cm_unknownCapabilities"	expr="'cm_unknownCapabilities'"/>
+<var name="cm_findUserRequest"		expr="'cm_findUserRequest'"/>
+<var name="cm_getConfereeList"		expr="'cm_getConfereeList'"/>
+<var name="cm_makeConfObject"		expr="'cm_makeConfObject'"/>
+<var name="cm_addConferees"			expr="'cm_addConferees'"/>
+<var name="cm_confInProgress"		expr="'cm_confInProgress'"/>
+<var name="cm_confCallOver"			expr="'cm_confCallOver'"/>
+<var name="cm_Done"					expr="'cm_Done'"/>
+<var name="cm_addBase"				expr="'cm_addBase'"/>
+<var name="cm_exit"					expr="'cm_exit'"/>
+
+<!-- user event names -->
+<var name="nextstate"				expr="'nextstate'"/>
+<var name="info"					expr="'info'"/>
+<var name="addconferee"				expr="'addconferee'"/>
+<var name="endcall"					expr="'endcall'"/>
+<var name="teardown"				expr="'teardown'"/>
+<var name="killapp_timeout"			expr="'killapp_timeout'"/>
+<var name="announcement_over"		expr="'announcement_over'"/>
+<var name="addList"					expr="'addList'"/>
+<var name="getList"					expr="'getList'"/>
+<var name="poll"					expr="'poll'"/>
+<var name="pollFinished"			expr="'pollFinished'"/>
+
+
+<!-- Vars used throughout -->
+
+	<!-- overall state name. Initialize: -->
+	<var name="cm_callState" expr="cm_init"/>
+	
+	<!-- name of conference object -->
+	<var name="confID" expr="''"/>
+	
+	<!-- ID of this session -->
+	<var name="home" expr="session.id"/>
+	
+	<!-- list of sessions spawned by this document -->
+	<var name="legs" expr="''"/>
+	<var name="legsCount" expr="0" />
+
+<!-- Variables used in various substates -->
+	<!-- cm_welcomeBase -->
+		<var name="checkCallerID_timeout_count"		expr="0"/>
+		<var name="checkCallerID_timeout_max"		expr="1"/>
+		<var name="cm_welcomeBase_gotdata"			expr="0"/>
+		<var name="cm_welcomeBase_finishedgreeting"	expr="0"/>
+	
+	<!-- cm_findUserRequest -->
+		<var name="cm_findUserRequest_count"			expr="0"/>
+		
+
+	<!-- cm_addConfeeres -->
+		<var name="cm_addConfeerecm_listPtr"			expr="0"/>
+		<var name="cm_addConfeerecm_addedCount"		expr="0"/>
+		<var name="cm_addConfeerecm_rejCount"			expr="0"/>
+		
+		
+	<!-- cm_confInProgress -->
+		<!-- max length conferees may speak -->
+		<!-- now set to 5 minutes -->
+		<var name="cm_ConfMaxLength"					expr="300000"/>
+		<var name="cm_ConfEndWait"						expr="60000"/>
+		
+
+<!-- List of phone numbers, and names if available, to add to conference call -->
+
+<var name="phoneList" expr=""/>
+<var name="labelList" expr=""/>
+<!-- <var name="names" expr="new Array()"/> -->
+<var name="nameDelimiter" expr="';'"/>
+<var name="phoneListCount" expr="0"/>
+<var name="currentPhone" />
+<var name="currentName" expr=""/>
+
+<!-- count of calls aside from base call -->
+<var name="callSequence" expr="0"/> 
+<var name="callsOutstanding" expr="0"/>
+
+
+<!-- Other variables -->
+	<!-- Kill the call after 10 minutes no matter what -->
+	<var name="killerTimeout" expr="600000"/>
+
+<!-- URLs of VoiceXML scripts -->
+<var name="vxml_prefix" expr="''"/>
+<var name="vxml_type" expr="'application/xml+vxml;platform=motorola'"/>
+<var name="vxml_greeting" expr=" vxml_prefix + 'greeting.vxml'"/>
+<var name="vxml_goodbye"  expr=" vxml_prefix + 'goodbye.vxml'"/>
+<var name="vxml_goodbye_error"  expr=" vxml_prefix + 'goodbye_error.vxml'"/>
+<var name="vxml_menu"  expr=" vxml_prefix + 'menu.vxml'"/>
+<var name="vxml_conference" expr=" vxml_prefix + 'conference.vxml'"/>
+<var name="vxml_youarejoining" expr=" vxml_prefix + 'youarejoining.vxml'"/>
+<var name="vxml_confinprogress" expr=" vxml_prefix + 'confinprogress.vxml'"/>
+<var name="vxml_confcallisover" expr=" vxml_prefix + 'confcallisover.vxml'"/>
+
+<!-- URLs of CCXML scripts -->
+<var name="ccxml_prefix" expr="''"/>
+<var name="ccxml_conf_legs" expr=" ccxml_prefix + 'conf_legs.xml'"/>
+<var name="ccxml_conf_announce" expr=" ccxml_prefix + 'conf_announce.xml'"/>
+<var name="ccxml_conf_session" expr=" ccxml_prefix + 'conf_session.xml'"/>
+
+<!-- URLs of announcements -->
+<var name="ann_conferece_over"		expr="'null://?text=The conference call is over. Please hang up now.'"/>
+
+<!-- URLs, phone numbers -->
+<var name="pstn_confinprogress"		expr="'sip:**86919991420968@fwd.pulver.com'"/>
+<var name="pstn_confcallisover"		expr="'sip:**86919991420969@fwd.pulver.com'"/>
+
+
+<!-- URLs of CGI scripts -->
+<var name="url_prefix" expr="'TOKEN_URL_CGI_PREFIX'"/>
+<var name="url_event" expr="'http.post'"/>
+<var name="url_CheckCallerID" expr="url_prefix + 'checkcallerid.cgi'"/>
+
+
+
+<!-- PROGRAM BEGINS -->
+
+
+<log expr="'Conference Manager Main Program (ccxml_conf.xml) begins...'"/>
+
+
+<eventprocessor statevariable="cm_callState">
+
+	<!-- STATE cm_init. Wait for info about numbers to call -->
+	
+	<!-- list of numbers to call -->
+	<transition state="cm_init" event="user.info" name="evt">
+
+		<assign name="phoneList" expr="evt.phoneList"/>
+		<assign name="labelList" expr="evt.labelList"/>
+		<!-- <var name="names" expr="eval(new Array(labelList.split(nameDelimiter)))"/> -->
+		<assign name="phoneListCount" expr="evt.phoneListCount"/>
+
+		<if cond="phoneListCount == 0 ">
+			<!-- No names. Exit. -->
+			<assign name="cm_callState" expr="cm_exit"/>
+		<else/>
+			<!-- start calling -->
+			<assign name="cm_callState" expr="cm_makeConfObject"/>
+		</if>
+		
+		<!-- Get to next state -->
+		<send event="nextstate" target="session.id"/>
+
+	</transition>
+
+	
+	
+	
+	<!-- cm_makeConfObject. Make a conference object -->
+	
+	
+	<transition state="cm_makeConfObject" event="user.nextstate" name="evt">
+		<createconference conferenceid="confID"/>
+	</transition>
+	
+	<!-- no specific errors associated with "createconference" just yet -->
+	<!-- since they may be defined in the future, stay in this state until we get confirmation -->
+
+	<transition state="cm_makeConfObject" event="ccxml.conference.created" name="evt">
+		<!-- next state: make calls, add calls to conf object -->
+		<assign name="cm_callState" expr="cm_addConferees"/>
+		<send event="nextstate" target="session.id"/>
+	</transition>
+
+	<transition state="cm_makeConfObject" event="error.conference.*" name="evt">
+		<!-- next state: make calls, add calls to conf object -->
+		<log expr="'ERROR: &quot;' + evt.reason + '&quot; with id ' + confID + ', exiting now'"/>
+		<exit/>
+	</transition>
+		
+	
+	<!-- cm_addConferees. spawn call legs, add them to conference -->
+	
+	
+	<transition state="cm_addConferees" event="user.nextstate" name="evt">
+		<!-- Enter the loop of adding conferees -->
+		<send event="addconferee" target="session.id"/>
+		<createccxml src="ccxml_conf_session" sessionid="makelist" /> <!-- to create list of call legs -->
+	</transition>
+	
+	<transition state="cm_addConferees" event="user.addconferee" name="evt">
+		
+		<!-- Anyone to add? -->
+		<if cond="cm_addConfeerecm_listPtr &lt; phoneListCount" >
+			<assign name="currentPhone" expr="phoneList.substr(11*cm_addConfeerecm_listPtr,10)"/>
+			<assign name="currentName" expr="labelList.split(nameDelimiter)[cm_addConfeerecm_listPtr]"/>
+			<fetch next="ccxml_conf_legs" fetchid="foo"/>	<!-- get ready to create call leg -->
+		<else/>
+			<!-- all added -->
+			<assign name="cm_callState" expr="cm_confInProgress"/>
+			<!-- get list of conferees -->
+			<send event="getList" target="makelist" namelist="home" />
+			<!-- flag that the list is finished -->
+			<assign name="makelist" expr="''"/>
+			<!-- got to next state -->
+			<send event="nextstate" target="session.id"/>
+		</if>
+	</transition>
+
+	<!-- document available, so add call -->
+	<transition state="cm_addConferees" event="fetch.done" name="evt">
+	
+		<!-- start up the leg -->
+		<createccxml fetchid="evt.fetchid" sessionid="singleCallLegSessionID" />
+		<send event="info" target="singleCallLegSessionID" namelist="currentPhone currentName confID home"/>
+		<assign name="cm_addConfeerecm_listPtr" expr="Number(cm_addConfeerecm_listPtr) + Number(1)"/>
+		
+		<!-- save session id of leg for later use -->
+		<assign name="listItem" expr="singleCallLegSessionID"/>
+		<send event="addList" target="makelist" namelist="listItem"/>
+		
+		<!-- see if there are more legs to add -->
+		<send event="addconferee" target="session.id"/>
+
+	</transition>
+	
+	
+	<!-- unable to fetch document. What should we do? Right now, assume call is over -->
+	<transition state="cm_addConferees" event="error.fetch" name="evt">
+		<assign name="cm_callState" expr="cm_confCallOver"/>
+		<send event="nextstate" target="session.id"/>
+	</transition>
+
+
+
+	<!-- cm_confInProgress. all confereees are connected. -->
+	<!-- actually, all we know at this point is that the legs have been started - not connected! -->
+
+
+	<transition state="cm_confInProgress" event="user.nextstate" name="evt">
+		<!-- Launch event to end call in N minutes -->
+		<send event="endcall" target="session.id" delay="cm_ConfMaxLength"/>
+	</transition>
+
+	<!-- call ends because time is up -->
+	<transition state="cm_confInProgress" event="user.endcall" name="evt" >
+		<!-- tell users that the call is over -->
+		<assign name="cm_callState" expr="cm_confCallOver"/>
+		<send event="nextstate" target="session.id" />
+	</transition>
+	
+	<!-- someone dropped out of the call -->
+	<transition state="cm_confInProgress" event="user.dropout" name="evt" >
+		<assign name="cm_addConfeerecm_listPtr" expr="Number(cm_addConfeerecm_listPtr) - Number(1)"/>
+		
+		<!-- is everyone gone? If only one participant left, call is over -->
+		<if cond="cm_addConfeerecm_listPtr &lt; 2">
+			<assign name="cm_callState" expr="cm_confCallOver"/>
+			<send event="nextstate" target="session.id" />
+		</if>
+	</transition>
+	
+		<!-- receive list of conferees, can happen in this state or next state -->
+	<transition state="(cm_confInProgress)||(cm_confCallOver)" event="user.listGotten" name="evt" >
+		<assign name="legs" expr="evt.ListString"/>
+		<assign name="legsCount" expr="evt.ListCount"/>
+	</transition>
+	
+	<!-- cm_confCallOver. Conf call is over, destroy objects and exit -->
+	
+	<!-- tell participants -->
+	<transition state="cm_confCallOver" event="user.nextstate" name="evt" >
+		<!-- get the script -->
+		<createccxml src="ccxml_conf_session" sessionid="notifylegs" />
+		<assign name="ListString"	expr="legs"/>
+		<assign name="ListCount"	expr="legsCount" />
+		<assign name="ListEvent"	expr="teardown" />
+		<assign name="data"			expr="vxml_confcallisover" />
+		<assign name="home"			expr="session.id" />
+		<!-- now wait for the return event from createccxml -->
+		<!-- Should move to the commented-out transition when the interpreter is fixed -->
+		<send event="poll" target="notifylegs" namelist="ListString ListCount ListEvent data home" />
+
+		<!-- just in case the spawned process does not send event -->
+		<send event="pollFinished" target="session.id" delay="cm_ConfEndWait"/>
+	</transition>
+	
+	<!-- This does not work because Beta does not support ccxml.created yet 
+	     when it does work, we can place the "send" here and not in the transition above
+	<transition state="cm_confCallOver" event="ccxml.created" name="evt" >
+		<send event="poll" target="notifylegs" namelist="ListString ListCount ListEvent data home" />
+	</transition>
+	-->
+	
+	
+	<!-- participants have heard about it -->
+	<transition state="cm_confCallOver" event="user.pollFinished" name="evt" >
+		<destroyconference conferenceid="confID"/>
+	</transition>
+			
+	<!-- conf has in fact been destroyed -->
+	<transition state="cm_confCallOver" event="ccxml.conference.destroyed"> <!-- should be conference.destroyed -->
+
+		<assign name="cm_callState" expr="cm_exit"/>
+		<send event="nextstate" target="session.id"/>
+		
+	</transition>
+	
+	<!-- as calls drop they will attempt to tell us. Ignore -->
+	<transition state="cm_confCallOver" event="user.dropout" name="evt" />
+	
+	
+	
+		
+	<!-- cm_exit. finished, so goodbye...  -->
+	
+	
+	
+	<!-- tell the conf controller goodbye -->
+	<transition state="cm_exit" event="user.nextstate" name="evt">
+		<exit/>
+	</transition>
+
+	
+	
+	<!-- General purpose handlers -->
+	
+	<!-- Conference destroyed. -->
+	<transition event="conference.destroyed" name="evt">
+		<log expr="'conference ended, state was ' + cm_callState"/>
+		<exit/>
+	</transition>
+	
+	
+	<!-- for safety's sake while debugging, put in a timeout -->
+	<!-- because this is asynchronous, this may arrive after 'info' event, so put it here -->
+	<transition event="ccxml.loaded" name="evt">
+		<send event="killapp_timeout" target="session.id" delay="killerTimeout"/>
+	</transition>
+
+	
+	
+	<!-- General purpose error handlers -->
+	
+	<transition event="error.document" name="evt">
+		<log expr="'ERROR: in &quot;conf_main.xml&quot;, &quot;' + evt.error + '&quot; while in state ' + cm_callState + ', exiting now'" />
+		<exit/>
+	</transition>
+	
+	<transition event="error.system" name="evt">
+		<log expr="'ERROR: &quot;' + evt.name + '&quot; with reason &quot;' + evt.error + '&quot; while in state ' + cm_callState + ', exiting now'"/>
+		<!-- makelist process may be waiting for us forever -->
+		<if cond="makelist != ''">
+			<send event="killapp_timeout" target="makelist"/>
+		</if>
+		<exit/>
+	</transition>
+	
+	<transition event="error.*" name="evt">
+		<log expr="'ERROR: &quot;' + evt.name + '&quot; with reason &quot;' + evt.reason + '&quot; while in state ' + cm_callState + ', exiting now'"/>
+		<!-- makelist process may be waiting for us forever -->
+		<if cond="makelist != ''">
+			<send event="killapp_timeout" target="makelist"/>
+		</if>
+		<exit/>
+	</transition>
+	
+	<transition event="system.ping">
+		<log expr="'ERROR: received system.ping, we must be dead'"/>
+		<exit/>
+	</transition>
+	
+	<!-- Final emergency debugging timeout -->
+	<transition event="user.killapp_timeout">
+		<exit/>
+	</transition>
+
+</eventprocessor>
+
+<!-- WARNING! Code found here will execute *before* eventprocessor! -->
+
+</ccxml>

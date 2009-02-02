@@ -1,0 +1,20 @@
+push2web release alpha-0.4
+
+	* Internet Explorer compatible VCM Monitoring Page.
+	* modify monitoring page for constant-width debug table to avoid annoying visual jumps
+
+push2web release alpha-0.3
+
+	* Put ComLink.class, ComLinkRead.class, ComLinkWrite.call, and push2web.war into SVN and releaese
+	* Update release notes with highly simplified install instructions
+
+push2web release alpha-0.2
+
+	* VCM monitor web page: each new call gets its own separate table.
+	* add data to flow between applet and servlet to enable one table per call
+	* use CSS on VCM monitor web page, add "placeholder" icons, improve readability
+	
+	Limitations: 
+	
+	* Does not mute/unmute because P2006 has a unjoin/join bug
+	* Have turned off "drop final call if only call left on conference" until we have an official or unofficial conference object

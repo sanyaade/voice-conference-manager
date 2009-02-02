@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Main module: Dispatches other modules as needed. -->
+<!-- $Header: /cvsroot/vcm/vcm/ccxml/conf_legs.xml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+<!-- $Id: conf_legs.xml,v 1.2 2005/02/16 02:04:20 myudkowsky Exp $ -->
+
+<!-- Valid states for this call -->
+
+<!-- list of symbolic substate names: -->
+
+<log expr="'Call Leg (conf_leg.xml) begins...'"/>
+
+
+<var name="cl_init"					expr="'cl_init'"/>
+<var name="cl_callInProgress"		expr="'cl_callInProgress'"/>
+<var name="cl_dropout_start"		expr="'cl_dropout_start'"/>
+<var name="cl_dropout_finish"		expr="'cl_dropout_finish'"/>
+
+<!-- event names -->
+<var name="dropout"					expr="'dropout'"/>
+<var name="info"					expr="'info'"/>
+<var name="killapp_timeout"			expr="'killapp_timeout'"/>
+<var name="nextstate"				expr="'nextstate'"/>
+<var name="ringing"					expr="'ringing'"/>
+<var name="conferenced"				expr="'conferenced'"/>
+<var name="announcing"				expr="'announcing'"/>
+<var name="dropped"					expr="'dropped'"/>
+<!-- POST via HTTP -->
+<var name="url_event" expr="'http.post'"/>
+<!-- var that contains event name for use in reports -->
+<var name="report" />
+
+<!-- Vars used throughout -->
+
+	<!-- overall state name. Initialize: -->
+	<var name="cl_callState" expr="cl_init"/>
+	
+	<!-- number to call -->
+	<var name="destPhone"/>
+	
+	<!-- name we called -->
+	<var name="destName"/>
+	
+	<!-- conference ID -->
+	<var name="conf"/>
+	
+	<!-- session ID of CCXML to notify of significant events -->
+	<var name="home"/>
+	
+	<!-- session ID of CCXML to report state changes, used to update db of call progress -->
+	<var name="reports" expr="'TOKEN_CGI_NOTIFY_URI'"/>
+	
+	<!-- name of this conference as reported to "reports" -->
+	<var name="confName" />
+	
+	<!-- this call's ID -->
+	<var name="thisCall"/>
+	
+	<!-- connection id -->
+	<var name="connectionid"/>
+	
+	<var name="NumberErrors" expr="0" />
+
+
+<!-- Variables used in various substates -->
+		
+	<!-- cl_confInProgress -->
+		<!-- max length conferees may speak -->
+		<!-- now set to 5 minutes -->
+		<var name="cl_ConfMaxLength"		expr="300000"/>
+		
+	<!-- cl_dropout -->
+		<var name="cl_dropout_announce"		expr="''"/>
+		
+		
+<!-- Other variables -->
+	<!-- Kill the call after 10 minutes no matter what -->
+	<var name="killerTimeout" expr="600000"/>
+
+<!-- URLs of VoiceXML scripts -->
+
+	<!-- Common prefixs, types -->
+	<var name="vxml_prefix" expr="''"/>
+	<var name="vxml_type" expr="'application/xml+vxml;platform=motorola'"/>
+	<var name="announcement_type" expr="'audio/wav'"/>
+	<var name="vxml_youarejoining"	expr="vxml_prefix + 'youarejoining.vxml'"/>
+	
+	<!-- the scripts -->
+
+<!-- URLs of CGI scripts -->
+
+conferenced
+
+<!-- PROGRAM BEGINS -->
+
+
+<eventprocessor statevariable="cl_callState">
+
+	<!-- STATE cl_init.  Wait for info about numbers to call -->
+	
+	
+	<!-- list of numbers to call -->
+	<transition state="cl_init" event="user.info" name="evt">
+  home
+		<assign name="destPhone" expr="evt.currentPhone"/>
+		<assign name="destName" expr="evt.currentName"/>
+		<assign name="conf" expr="evt.confID"/>
+		<assign name="confName" expr="conf"/>
+		<assign name="home" expr="evt.home"/>
+
+		<createcall dest="destPhone"/> 
+
+	</transition>
+	
+	<transition state="cl_init" event="connection.alerting" name="evt">
+		<!-- Notify that we are connected -->
+		<assign name="thisCall" expr="evt.connectionid"/>
+		<assign name="report" expr="ringing"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+	</transition>		
+
+	<!-- play welcome message -->
+	<transition state="cl_init" event="connection.connected" name="evt" >
+		<!-- play an annoucement as each is connected -->
+		<dialogstart src="vxml_youarejoining" type="vxml_type"/>
+		<assign name="cl_callState" expr="cl_callInProgress"/>
+		<assign name="thisCall" expr="evt.connectionid"/>
+		
+		<!-- Notify that we are connected -->
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> -->
+		<assign name="report" expr="announcing"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+	</transition>
+	
+
+	
+	<!-- join into the conference -->
+	
+	<transition state="cl_callInProgress" event="dialog.exit">
+		<join id1="thisCall" id2="conf"/>
+	</transition>
+	
+	<!-- conference joined -->
+	<transition state="cl_callInProgress" event="conference.joined">
+		<assign name="report" expr="conferenced"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+	</transition>
+
+	
+	<!-- Dropping out of calls by command of the application -->
+
+	
+	<!-- unjoin from the conference object, otherwise you cannot make annoucement -->
+	<transition state="cl_dropout_start" event="user.dropout" name="evt" >
+		<!-- inform the home session we are attempting to drop out -->
+		<send event="dropout" target="home" namelist="thisCall"/>
+		<unjoin id1="thisCall" id2="conf"/>
+	</transition>
+	
+	<!-- dropout announcement start -->
+	<transition state="cl_dropout_start" event="ccxml.conference.unjoined" name="evt" >
+		<assign name="cl_callState" expr="cl_dropout_finish" />
+		<dialogstart connectionid="thisCall" src="cl_callState_announce" type="vxml_type"/>
+	</transition>
+	
+	<!-- dropout announcement start if we are not in conference state -->
+	<!-- ignore the error, assume we were never in conference -->
+	<transition state="cl_dropout_start" event="error.conference.unjoin" name="evt" >
+		<assign name="cl_callState" expr="cl_dropout_finish" />
+		<dialogstart connectionid="thisCall" src="cl_callState_announce" type="vxml_type"/>
+	</transition>
+		
+	<!-- dropout completed -->
+	<transition state="cl_dropout_finish" event="dialog.exit" name="evt" >
+		
+		<log expr="'Conferre ID ' + destPhone + '/' + thisCall + ' dropping out '" /> <!-- should be "connectionid" -->
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> -->
+		<!-- inform the reporting session we are dropping out -->
+		<assign name="report" expr="dropped"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+		<!-- drop the call and exit -->
+		<exit/>
+
+	</transition>
+	
+	
+	<!-- dropout completed -->
+	<transition state="cl_dropout_finish" event="user.dropout" name="evt" >
+		
+		<log expr="'Conferre ID ' + destPhone + '/' + thisCall + ' dropping out '" />
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> -->
+		<send event="dropout" target="home" namelist="thisCall"/>
+		<!-- inform the reporting session we are dropping out -->
+		<assign name="report" expr="dropped"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+		<!-- drop the call and exit -->
+		<exit/>
+
+	</transition>
+	
+	
+	<!-- General handlers. -->
+	
+	<!-- for safety's sake while debugging, put in a timeout -->
+	<!-- because this is asynchronous, this may arrive after 'info' event, so put it here -->
+	<transition event="ccxml.loaded" name="evt">
+		<send event="killapp_timeout" target="session.id" delay="killerTimeout"/>
+	</transition>
+	
+	<!-- if they disconnect voluntarily at any time -->
+
+	<transition  event="connection.disconnected" name="evt" >
+		<assign name="cl_callState" expr="cl_dropout_finish" />
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> should be connectionid -->
+		<send event="dropout" target="session.id" namelist="thisCall"/>
+
+	</transition>	
+	
+	<!-- If there's a failure, handle it as a dropout -->
+	<transition  event="connection.failed" name="evt" >
+		<assign name="cl_callState" expr="cl_dropout_finish" />
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> -->
+		<send event="dropout" target="session.id" namelist="thisCall"/>
+	</transition>
+
+	<!-- asked to drop call. goto dropout -->
+	<transition  event="user.teardown" name="evt" >
+		<log expr="'Conferre ID ' + destPhone + '/' + session.id + ' tearing down '" />
+		
+		<!-- get announcement, if any provided -->
+		<assign name="cl_callState_announce" expr="evt.data" />
+	
+		<if cond="cl_callState_announce != '' " >
+			<!-- announcement to play -->
+			<assign name="cl_callState" expr="cl_dropout_start" />
+		<else/>
+			<!-- just drop out -->
+			<assign name="cl_callState" expr="cl_dropout_finish" />
+		</if>
+		<!-- <assign name="connectionid" expr="session.id"/> -->
+		<send event="dropout" target="session.id" namelist="thisCall"/>
+				
+	</transition>
+	
+	
+	
+	
+	<!-- we are dropping out -->
+	<transition  event="user.dropout" name="evt" >
+		
+		<log expr="'Conferre ID ' + destPhone + '/' + thisCall + ' dropping out '" />
+		<!-- <assign name="connectionid" expr="evt.connectionid"/> -->
+		<send event="dropout" target="home" namelist="thisCall"/>
+		<!-- inform the reporting session we are dropping out -->
+		<assign name="report" expr="dropped"/>
+		<send event="url_event" target="reports" namelist="report destPhone destName confName"/>
+		<exit/>
+
+	</transition>	
+
+	<!-- General purpose error handlers -->
+
+	<transition event="error.document" name="evt">
+		<log expr="'ERROR: in &quot;conf_legs.xml&quot;, &quot;' + evt.error + '&quot; while in state ' + cl_callState + ', exiting now'" /> <!-- evt.error should be evt.reason -->
+	</transition>
+	
+	<transition event="error.*">
+		<log expr="'ERROR: &quot;' + evt.error + '&quot; while in state ' + cl_callState + ', exiting now'"/>
+		<!-- <assign name="connection" expr="session.id"/> -->
+		<!-- Check to see if there are too many errors. If yes, stop immediately -->
+		<assign name="NumberErrors" expr="NumberErrors += 1"/>
+		<if cond="NumberErrors &gt; 1">
+			<log expr="'ERROR: Too many errors, exit now'"/>
+			<exit/>
+		<else/>
+			<send event="dropout" target="session.id" namelist="thisCall"/>
+		</if>
+	</transition>
+	
+	<!-- sick puppy -->
+	<transition event="system.ping">
+		<log expr="'ERROR: received system.ping, we must be dead'"/>
+		<exit/>
+	</transition>
+	
+	<!-- Final emergency debugging timeout -->
+	<transition event="user.killapp_timeout">
+		<exit/>
+	</transition>
+
+</eventprocessor>
+
+<!-- WARNING! Code found here will execute *before* eventprocessor! -->
+
+</ccxml>

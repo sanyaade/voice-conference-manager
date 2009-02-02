@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<META http-equiv='Cache-Control' content='no-cache, must-revalidate'>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com) -->
+<!-- See attached license for details -->
+
+<!-- $Header: /cvsroot/vcm/vcm/html/localTest.html,v 1.1 2005/02/16 02:04:20 myudkowsky Exp $ -->
+<!-- $Id: localTest.html,v 1.1 2005/02/16 02:04:20 myudkowsky Exp $ -->
+
+
+<HEAD>
+
+<script type="text/javascript" src=updateVcmStatus.js>
+</script>
+
+<script>
+
+	function incomingJavaText(str){
+			updateTable (str ) ;
+
+	}
+	window.setTimeout( "incomingJavaText('Status;Connected and Ready to Receive Updates')", 2000 ) ;
+	window.setTimeout( "incomingJavaText('Data;some call id;Martian Government;(NXX) XXX-XXXX;ringing')", 5000 ) ;
+	window.setTimeout( "incomingJavaText('Data;some call id;Martian Government;(NXX) XXX-XXXX;connected')", 10000 ) ;
+
+</script>
+
+	<TITLE>
+		Conference Call Status
+	</TITLE>
+
+
+
+<APPLET CODE = "ComLink" WIDTH = "1" HEIGHT = "1" NAME = "ConnectToServer" MAYSCRIPT>
+<PARAM NAME = "cache_option" VALUE="No">
+<PARAM NAME = "PORT" VALUE="TOKEN_BROWSER_PORT">
+</APPLET>
+
+
+</HEAD>
+
+
+<BODY>
+
+
+
+<p>
+
+<table name="allCallStatus" border="1">
+<tr>
+	<td>Server Status</td><td id="ServerStatus"></td>
+</tr>
+</table>
+
+
+</p>
+<p></p>
+
+
+
+</BODY>
+</HTML>

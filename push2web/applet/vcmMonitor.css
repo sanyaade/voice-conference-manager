@@ -1,0 +1,67 @@
+body {
+	color : purple ;
+}
+
+/*
+	Debug Information format
+*/
+
+h3.debug {
+	text-align: center ;
+}
+
+table.debug {
+	/*width: 50% ;*/
+	margin-left: auto ;
+	margin-right: auto ;
+	border: 1px solid grey ;
+}
+
+table.debug td {
+	border: 1px solid grey ;
+
+}
+
+/*
+	Actual info format
+*/
+
+caption.call {
+	margin-left: auto ;
+	margin-right: auto ;
+	text-align: center ;
+	font-size: 200% ;
+}
+	
+
+table.call {
+	width: 75% ;
+	margin-left: auto ;
+	margin-right: auto ;
+	border: none ;
+	
+}
+
+table.call th {
+
+	font-weight: bold ;
+	text-align: left ;
+}
+
+table.call td {
+	padding: 10px ;
+	background: lightgrey ; 
+	border: 1px solid white ;
+}
+
+/*
+	Prevent fluctuations in size of cells
+*/
+
+#LatestMessage {
+	width: 90% ;
+}
+
+.StatusHeader {
+	width: 25% ;
+}

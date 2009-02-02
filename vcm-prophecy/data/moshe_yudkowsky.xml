@@ -1,0 +1,28 @@
+<contactlist>
+
+	<contact type="person" sex="male" name="Moshe Yudkowsky" nickname="Moshe">
+		<address type="phone" name="cell"> sip:moshe3@flute:5070 </address>
+		<address type="phone" name="office"> sip:moshe1@flute:5070 </address>
+		<address type="phone" name="home"> sip:moshe2@flute:5070 </address>
+	</contact>
+	
+	
+	<contact type="person" sex="male" name="Louis Wu">
+		<address type="phone" name="home"> sip:moshe4@flute:5070 </address>
+	</contact>
+	
+	<contact type="person" sex="male" name="Jack Brennan" nickname="Brennan" >
+		<address type="phone" name="home"> sip:moshe5@flute:5070 </address>
+		<address type="phone" name="Kobold"> sip:moshe51@flute:5070 </address>
+	</contact>
+	
+	<contact type="person" sex="male" name="Gil Hamilton" >
+		<address type="phone" name="home"> sip:moshe6@flute:5070 </address>
+	</contact>
+	
+	
+	<contact type="person" sex="male" name="Beowulf Schaffer" >
+		<address type="phone" name="home"> sip:moshe7@flute:5070 </address>
+	</contact>
+
+</contactlist>

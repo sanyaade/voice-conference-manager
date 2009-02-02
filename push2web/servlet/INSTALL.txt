@@ -1,0 +1,62 @@
+Notes
+
+	Copyright (c) 2004-2006 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+	$Author: myudkowsky $
+	$Date: 2006-07-28 10:48:44 -0500 (Fri, 28 Jul 2006) $
+	$Id: INSTALL.txt 92 2006-07-28 15:48:44Z myudkowsky $
+	$Revision: 43 $
+
+See license for terms of use and disclaimers!
+
+* This project is available at Sourceforge, http://vcm.sourceforge.net.
+
+* The latest version of the source code is available from the SVN repository. To check out the source code, use your SVN client:
+
+svn co https://svn.sourceforge.net/svnroot/vcm/branch/push2web
+
+INSTALLATION
+
+The simplest way to install is place "push2web.war" into the voxeo/webapps directory. Restart the vappserver ("prophecy restart vappserver") and the system will be up and running.
+
+In the remainder of this document, I discuss how to build this system from scratch.
+
+
+== Servers
+
+This software runs on a web server that supports Java servlets and JSP. For example, Prophecy 2006 includes an ordinary web server on port 9990 and a Java servlet/JSP server -- Jetty -- on port 9991.
+
+To build, use "ant," an Apache Java utility. The included "build.xml" file includes the target "war" which which will create push2web.war.
+
+To install, place the WAR file into the appropriate directory. On Prophecy 2006, that would be Program Files/Voxeo/webapps, and then restart the Jetty server ("prophecy restart vappserver").
+
+== Configuration Files
+
+The push2web.xml file (which becomes "web.xml" in the WAR file) contains the PublicPort variable used by the browser.
+
+The data you send to the browser is formatted by SendToBrowserFormat.java. In some future release, this could be a configurable file; in the meantime, to alter the format you must alter the file and recompile.
+
+Data goes to the servet at "/send.do." The name, location, URL pattern, etc. can be configured in push2web.xml.
+
+EXAMPLE:
+
+To send data about a call in progress to the web page, fetch the following URL:
+
+http://p2006server:9991/push2web/send.do?destName=Moshe&destPhone=tel:xxxxxxxxxxx&confName=foo&report=ringing"
+
+Explanation:
+
+p2006server -- machine name of P2006 server.
+9991 -- port on P2006 server for JSP and servlets
+send.do -- servlet that sends data to browser
+
+Data we send:
+
+destName = Moshe -- name of person on call
+destPhone = tel:xxxxxxxxxxx -- phone number of that person
+confName = foo -- name of confererence. 
+report = ringing -- state of call, such as "connected," "ringing," "dropped."
+
+This data can also be sent using POST.
+
+

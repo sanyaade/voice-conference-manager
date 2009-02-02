@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Play "goodbye" at end of sucessful demo -->
+
+
+<!-- $Header: /cvsroot/vcm/vcm/vxml/goodbye.vxml,v 1.1.1.1 2004/08/17 14:18:24 myudkowsky Exp $ -->
+<!-- $Id: goodbye.vxml,v 1.1.1.1 2004/08/17 14:18:24 myudkowsky Exp $ -->
+
+
+<!-- Play greeting -->
+
+	<form id="Form">
+		<block>
+			<prompt>
+				Successful finish of this segment of the demo.
+			</prompt>
+			<exit/>
+			</block>
+	</form>
+
+</vxml>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+	
+<!-- 
+	 $Author: myudkowsky $
+	 $Date: 2006-06-05 19:45:04 -0500 (Mon, 05 Jun 2006) $
+	 $Id: push2web.xml 51 2006-06-06 00:45:04Z myudkowsky $
+	 $Revision$
+-->
+
+	
+	
+	<context-param>
+		<param-name>PublicPort</param-name>
+		<param-value>15334</param-value>
+	</context-param>
+
+	
+	<!-- listeners -->
+	<listener>
+		<listener-class>push2web.PushServer</listener-class>
+	</listener>
+	
+	<!-- servlets -->
+	<!-- send data to logged-in browser -->
+	<servlet>
+		<servlet-name>SendToBrowser</servlet-name>
+		<servlet-class>push2web.SendToBrowser</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>SendToBrowser</servlet-name>
+		<url-pattern>/send.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- allow browser to log in -->
+	<servlet>
+		<servlet-name>MonitorJava</servlet-name>
+		<servlet-class>push2web.vcmMonitor</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MonitorJava</servlet-name>
+		<url-pattern>/vcmMonitor.do</url-pattern>
+	</servlet-mapping>
+
+	
+	<!-- JSP pages -->
+	<!-- test of ability to use JSP -->
+	
+	<servlet>
+		<servlet-name>Monitor</servlet-name>
+		<jsp-file>/vcmMonitor.jsp</jsp-file> <!-- fully-qualified path name! -->
+		<init-param>
+			<param-name>PublicPort</param-name>
+			<param-value>15334</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Monitor</servlet-name>
+		<url-pattern>/vcmMonitor.foo</url-pattern>
+	</servlet-mapping>
+	
+
+</web-app>

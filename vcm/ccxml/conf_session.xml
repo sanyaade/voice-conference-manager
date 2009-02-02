@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- Session: Maintain list of all call legs -->
+<!-- two modes: -->
+<!-- mode 1: receive data and place on list -->
+<!-- mode 2: given a list, execute command -->
+
+<!-- $Header: /cvsroot/vcm/vcm/ccxml/conf_session.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+<!-- $Id: conf_session.xml,v 1.1.1.1 2004/08/17 14:18:23 myudkowsky Exp $ -->
+
+<log expr="'ListString action program (conf_session.xml) begins...'"/>
+
+<!-- Valid states for this call -->
+
+<!-- list of symbolic substate names: -->
+
+<var name="csd_base"					expr="'csd_base'"/>
+<var name="csd_exit"					expr="'csd_exit'"/>
+<var name="csd_sendEvent"					expr="'csd_sendEvent'"/>
+
+
+<!-- user event names -->
+<var name="nextstate"				expr="'nextstate'"/>
+<var name="info"					expr="'info'"/>
+<var name="addList"					expr="'addconferee'"/>
+<var name="doPoll"					expr="'doPoll'"/>
+<var name="pollFinished"			expr="'pollFinished'"/>
+<var name="killapp_timeout"			expr="'killapp_timeout'"/>
+<var name="listGotten"				expr="'listGotten'"/>
+
+
+
+<!-- Vars used throughout -->
+
+	<!-- overall state name. Initialize: -->
+	<var name="csd_callState" expr="csd_base"/>
+	
+<!-- Variables used in various substates -->
+	<!-- ListString variables -->
+	<var name="ListString" expr=""/>
+	<var name="ListCount" expr="0"/>
+	
+	<!-- list parsing variables -->
+	<var name="itemRegex"	expr="'^\\S+\\s'" />
+	<var name="itemNoSpace"	expr="'^\\S+'"/>
+	<var name="itemNull"	expr="''" />	<!-- null string -->
+	
+	<!-- remote session location -->
+	<var name="home" />
+
+
+<!-- Other variables -->
+	<!-- Kill the call after 3 minutes no matter what -->
+	<var name="killerTimeout" expr="180000"/>
+
+<!-- URLs of VoiceXML scripts -->
+<var name="vxml_prefix" expr="''"/>
+<var name="vxml_type" expr="'application/xml+vxml;platform=motorola'"/>
+
+
+<!-- URLs of CCXML scripts -->
+
+
+<!-- URLs, phone numbers -->
+
+
+<!-- URLs of CGI scripts -->
+
+
+<!-- PROGRAM BEGINS -->
+
+
+<eventprocessor statevariable="csd_callState">
+
+	<!-- Making lists -->	
+
+
+	<!-- add a call leg to the list of call legs (sessions) -->
+	<transition event="user.addList" name="evt">
+
+		<assign name="ListString" expr="ListString + evt.listItem + ' ' "/>
+		<assign name="ListCount" expr="Number(ListCount) + Number(1)"/>
+
+	</transition>
+	
+	<!-- send ListString back when asked -->
+	<!-- warning: if app sending "getList" dies, we will never see this event! -->
+	<transition event="user.getList" name="evt">
+
+		<assign name="home" expr="evt.home" />
+		<send event="listGotten" target="home" namelist="ListString ListCount"/>
+		<exit/>
+	
+	</transition>
+
+	
+	<!-- Processing lists -->
+	
+
+	<!-- send listed event to sessions -->
+	<!-- after each send, chedck for next item -->
+	<transition event="user.poll" name="evt">
+
+		<!-- get list, number of items, the event to send to the sessions, and the data if any -->
+		<assign name="ListString" expr="evt.ListString" />
+		<assign name="ListCount" expr="evt.ListCount" />
+		<assign name="ListEvent" expr="evt.ListEvent" />
+		<assign name="data" expr="evt.data" />
+		<assign name="home" expr="evt.home" />
+		
+		<!-- signal self to start doing the poll -->
+		<assign name="csd_callState" expr="csd_sendEvent"/>
+		<send event="doPoll" target="session.id"/>
+
+	</transition>
+	
+	
+	<!-- start doing the poll -->
+	
+	<transition state="csd_sendEvent" event="user.doPoll" name="evt">
+	
+		<if cond="Number(ListCount) &gt; Number(0)" >
+		
+			<!-- pull an item off the ListString -->
+			
+			<assign name="currentItem" expr="ListString.match(itemRegex)" />
+			<!-- Note: the "replace" method doesn't seem to work -->
+			<assign name="ListString"  expr="ListString.slice(Number(currentItem.length))" />
+			<!-- take off spaces at end of currentItem -->
+			<assign name="currentItem" expr="currentItem.match(itemNoSpace)" />
+	
+			
+			<!-- decrement counter -->
+			<assign name="ListCount" expr="Number(ListCount) - Number(1)" />
+			
+			<!-- send off the data -->
+			<send event="ListEvent" target="currentItem" namelist="data" />
+			
+			<!-- try again -->
+			<send event="doPoll" target="session.id"/>
+			
+		<else/>
+			<!-- we are finished -->
+			<send event="pollFinished" target="home"/>
+			<exit/>
+			
+		</if>
+
+	</transition>
+
+	
+	
+	<!-- for safety's sake while debugging, put in a timeout -->
+	<!-- because this is asynchronous, this may arrive after 'info' event, so put it here -->
+	<transition event="ccxml.loaded" name="evt">
+		<send event="killapp_timeout" target="session.id" delay="killerTimeout"/>
+	</transition>
+
+	
+	
+	<!-- General purpose error handlers -->
+
+	<transition event="error.document" name="evt">
+		<log expr="'ERROR: in &quot;conf_session.xml&quot;, &quot;' + evt.error + '&quot; while in state ' + csd_callState + ', exiting now'" />
+		<exit/>
+	</transition>
+	
+	<transition event="error.*">
+		<log expr="'ERROR: &quot;' + evt.error + '&quot; while in state ' + csd_callState + ', exiting now'"/>
+		<exit/>
+	</transition>
+	
+	<transition event="system.ping">
+		<log expr="'ERROR: received system.ping, we must be dead'"/>
+		<exit/>
+	</transition>
+	
+	<!-- Final emergency debugging timeout -->
+	<transition event="user.killapp_timeout">
+		<exit/>
+	</transition>
+
+</eventprocessor>
+
+<!-- WARNING! Code found here will execute *before* eventprocessor! -->
+
+</ccxml>

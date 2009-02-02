@@ -1,0 +1,29 @@
+Notes
+
+Copyright (c) 2004-2006 by Moshe Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+$Author: myudkowsky $
+$Date: 2006-06-05 19:45:04 -0500 (Mon, 05 Jun 2006) $
+$Id: TODO.txt 51 2006-06-06 00:45:04Z myudkowsky $
+$Revision: 43 $
+
+See license for terms of use and disclaimers!
+
+To do list for push2web - P2006 Edition
+
+* Move to XML
+
+  - send XML text between server and browser -- AJAX-like model
+
+* Authentication
+
+  - Create login or other token for web page. Send data from conference only to authenticated user.
+
+
+* CSS
+
+  - make demo HTML page into nicer CSS version
+
+* Configuration
+
+  - push2web is a WAR file. Should config information be in a separate text XML file? Right now it's in the web.xml file, which means that any change requires re-compile of WAR archive.

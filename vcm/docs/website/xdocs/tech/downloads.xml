@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.2//EN" "http://apache.org/forrest/dtd/document-v12.dtd">
+<document> 
+  <header> 
+    <title>Voice Conference Manager Downloads</title> 
+  </header> 
+  <body> 
+	<section>
+		<title>Downloads</title>
+		<p>The Voice Conference Manager project releases its files via Sourceforge. The files may be found at the 
+	     <link
+          href="ext:SummaryPage">Project Summary Page</link> on <link href="ext:sourceforge.net">Sourceforge</link>.
+        </p>
+    </section>
+  </body>
+</document>

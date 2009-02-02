@@ -1,0 +1,34 @@
+Notes
+
+Copyright (c) 2004 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com)
+
+$Header: /cvsroot/vcm/vcm/INSTALL.txt,v 1.2 2005/02/16 02:04:17 myudkowsky Exp $
+$Id: INSTALL.txt,v 1.2 2005/02/16 02:04:17 myudkowsky Exp $
+
+See license for terms of use and disclaimers!
+
+* This project is available at Sourceforge, http://vcm.sourceforge.net. 
+
+INSTALLATION
+
+== Servers and Interpreters
+
+First of all, to get this running, you need a VoiceXML and CCXML interpreter. If you want to hook up to the telephone network, you'll also need a telephony server. ASR & TTS require speech technology resources. To test this release, I used an account on Voxeo (<http://community.voxeo.net>), which provides not only telephony/ASR/TTS resources but also storage space for the files. 
+
+As an alternative, you can configure/run your own servers. And note that some VoiceXML servers, such as the one from IBM's Alphaworks, let you use a keyboard instead of ASR/TTS resources -- or at least, they did the last time I checked.
+
+== Configuration of Files
+
+The files themselves must be altered to point to the correct URLs. VoiceXML and CCXML lack any construct that would let them read config files, which means that all URLs in these files must be manually configured to point to the correct locaions. I use a script to configure these files. Check the file config/README.txt for information on how to run the automatic configuration utility.
+
+== Configuration of CCXML/VoiceXML Servers
+
+The first script in this application is ccxml/main.xml. The scripts are all written, at present, on the assumption that all CCXML and VoiceXML scripts are at the same directory level. But there are variables in the scripts that should let you change this if you want to use subdirectories.
+
+You're on your own for everything else -- I don't know how to provision your VoiceXML or CCXML server!
+
+If you're using Voxeo, just stuff all the VoiceXML and CCXML scripts onto Voxeo's server, provision a CCXML application, and point the Voxeo application server at the entry script (main.xml).
+
+== Configuration of web page server
+
+A user can view a web page that updates, in real time, with status information from the CCXML interpreter. To install, place the web page, the JavaScript file, and the Java class file all in the same directory. The user simply loads the web page and can see the status of calls in real time. See java/README.txt for further information.

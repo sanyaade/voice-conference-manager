@@ -1,0 +1,38 @@
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com) -->
+<!-- See attached license for details -->
+
+<!-- $Header$ -->
+<!-- $Id: config.xml 9 2005-02-16 02:04:20Z myudkowsky $ -->
+
+<parameters>
+
+	<!-- VARIABLES FOR THE "CONFIG" SCRIPT -->
+	<!-- Destination: Scripts in the VCM directory will be copied to the directory defined by "destination" -->
+	<param name="destination"> /home/example/vcmtest/ </param>
+
+
+	<!-- VARIABLES FOR VCM FILES -->
+	
+	<!-- TOKEN_URL_CGI_PREFIX: URI of CGI scripts on the remote server -->
+	<token name="TOKEN_URL_CGI_PREFIX"> http://www.example.com/cgi-bin/vcm/ </token>
+	
+	<!-- TOKEN_CGI_DB_PATH: path, in the CGI scripts on remote server, of the database of authorized users -->
+	<token name="TOKEN_CGI_DB_PATH"> /home/example/vcm/testdatabase </token>
+	
+	<!-- TOKEN_CGI_GRAMMAR_URI:  URI of speech grammar used to select conference attendees -->
+	<token name="TOKEN_CGI_GRAMMAR_URI"> http://www.example.com/cgi/get_grammar.cgi </token>
+	
+	<!-- TOKEN_CGI_NOTIFY_URI:  URI of CGI script to notify of call state changes -->
+	<token name="TOKEN_CGI_NOTIFY_URI"> http://www.example.com/cgi/vcmccxmlrcv.cgi </token>
+	
+	<!-- Used by testparm.py. -->
+	<!-- Authenticate to Voxeo server that we are authorized to initiatate CCXML script via HTTP -->
+	<token name="TOKEN_CGI_RUN_CCXML_TESTPARM"> long token here </token>
+	
+	<!-- Port to use on our server. Send CCXML reports to this port -->
+	<token name="TOKEN_CCXML_PORT"> 51983 </token>
+	
+	<!-- Port to use on our server. Browsers connect to this port -->
+	<token name="TOKEN_BROWSER_PORT"> 51984 </token>
+
+</parameters>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+<!-- tell conference participants that everyone is on the call -->
+
+
+<!-- $Header$ -->
+<!-- $Id: conf_started.vxml 26 2006-05-09 14:52:16Z myudkowsky $ -->
+
+
+<!-- Play greeting -->
+
+	<form id="Form">
+		<block>
+			<prompt>
+				We will now start the conference call you requested. You may now hang up. Thank you. Goodbye.
+			</prompt>
+			<exit/>
+			</block>
+	</form>
+
+</vxml>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate http://www.Disaggregate.com -->
+<!-- See attached license for details and disclaimers -->
+
+
+<!-- Play initial greeting -->
+
+
+<!-- $Header$ -->
+<!-- $Id: greeting.vxml 3 2004-08-17 14:18:23Z myudkowsky $ -->
+
+
+	<form id="Form">
+		<block>
+			<prompt>
+				<!-- Real welcome: -->
+				<!-- Welcome to the conference system. One moment, please, while we look up your information. -->
+				<!-- Debug welcome: -->
+				Welcome
+			</prompt>
+			<exit/>
+			</block>
+	</form>
+
+</vxml>

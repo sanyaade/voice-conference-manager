@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<META http-equiv='Cache-Control' content='no-cache, must-revalidate'>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+
+<!--
+	Monitor progress of conference call
+	
+	Works in conjunction with Voice Conference Manager
+-->
+
+<!-- Copyright (c) 2004 by M. Yudkowsky, Disaggregate (http://www.Disaggregate.com) -->
+<!-- See attached license for details -->
+
+<!--
+	$Author: myudkowsky $
+	$Date: 2006-08-23 18:11:03 -0500 (Wed, 23 Aug 2006) $
+	$Revision$
+	$Id: vcmMonitor.html 103 2006-08-23 23:11:03Z myudkowsky $
+-->
+
+<HEAD>
+<link type="text/css" href="vcmMonitor.css" rel="stylesheet">
+
+<script type="text/javascript" src="updateVcmStatus.js">
+</script>
+<script>
+
+	function incomingJavaText(str){
+			// document.write(str) ;
+			updateTable ( str ) ;
+			
+	}
+
+</script>
+
+	<TITLE>
+		Conference Call Status
+	</TITLE>
+
+
+
+<APPLET CODE = "ComLink" WIDTH = "1" HEIGHT = "1" NAME = "ConnectToServer" MAYSCRIPT>
+<PARAM NAME = "cache_option" VALUE="No">
+<PARAM NAME = "PORT" VALUE="15334">
+</APPLET>
+<!--<APPLET CODE = "ComLinkRead" WIDTH = "1" HEIGHT = "1" NAME = "ConnectToServerRead" MAYSCRIPT>
+<PARAM NAME = "cache_option" VALUE="No">
+</APPLET>
+<APPLET CODE = "ComLinkWrite" WIDTH = "1" HEIGHT = "1" NAME = "ConnectToServerWrite" MAYSCRIPT>
+<PARAM NAME = "cache_option" VALUE="No">-->
+</APPLET>
+</HEAD>
+
+
+<BODY>
+
+<div class="debug">
+
+
+<h3 class="debug">Debug Status Information</h3>
+<table name="allCallStatus" class="debug">
+
+<tr>
+	<td>Latest Message</td><td id="LatestMessage"></td>
+</tr>
+<tr>
+	<td>Server Status</td><td id="ServerStatus">Not Connected</td>
+</tr>
+
+</table>
+</div>
+
+<!-- script will place other elements here -->
+
+</BODY>
+</HTML>
